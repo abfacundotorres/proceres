@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Términos y Condiciones — Ciudad Inteligente</title>
+  <meta name="description" content="Términos y condiciones de uso y política de privacidad de Ciudad Inteligente." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #faf7f2;
+      --white:    #ffffff;
+      --ink:      #1c1510;
+      --celeste:  #4a9eca;
+      --amarillo: #f5c842;
+      --gris:     #6b6258;
+      --borde:    #e0d8cc;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      background: var(--bg);
+      border-bottom: 2px solid var(--ink);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a {
+      display: block;
+      padding: 0 1.1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      line-height: 60px;
+      transition: color 0.15s;
+    }
+    .nav-links li a:hover { color: var(--celeste); }
+
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 60px; left: 0;
+      background: var(--bg);
+      border: 2px solid var(--ink);
+      border-top: none;
+      min-width: 220px;
+      z-index: 300;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      border-bottom: 1px solid var(--borde);
+      line-height: 1.4;
+      transition: background 0.15s;
+    }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover { background: var(--amarillo); }
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* ── HEADER ── */
+    .page-header {
+      margin-top: 60px;
+      background: var(--ink);
+      padding: 4rem 2.5rem 3rem;
+      border-bottom: 4px solid var(--amarillo);
+    }
+
+    .page-header-tag {
+      display: inline-block;
+      background: var(--amarillo);
+      color: var(--ink);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .page-header h1 .accent { color: var(--celeste); }
+
+    .page-header-meta {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(250,247,242,0.5);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── CONTENIDO ── */
+    .contenido {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem 6rem;
+    }
+
+    .seccion {
+      margin-bottom: 3.5rem;
+      padding-bottom: 3.5rem;
+      border-bottom: 1px solid var(--borde);
+    }
+    .seccion:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .seccion-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      color: var(--celeste);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .seccion h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      line-height: 1;
+    }
+
+    .seccion p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: #3a3028;
+      margin-bottom: 1rem;
+    }
+    .seccion p:last-child { margin-bottom: 0; }
+
+    .seccion ul {
+      list-style: none;
+      margin: 0.75rem 0 1rem;
+    }
+    .seccion ul li {
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: #3a3028;
+      padding: 0.3rem 0 0.3rem 1.4rem;
+      position: relative;
+    }
+    .seccion ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--celeste);
+      font-weight: 700;
+    }
+
+    .seccion a {
+      color: var(--celeste);
+      text-decoration: none;
+    }
+    .seccion a:hover { text-decoration: underline; }
+
+    /* bloque destacado */
+    .highlight {
+      background: var(--amarillo);
+      border-left: 4px solid var(--ink);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .highlight p {
+      font-weight: 500;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    /* contacto final */
+    .contacto-box {
+      background: var(--ink);
+      padding: 2rem 2.5rem;
+      margin-top: 1rem;
+    }
+    .contacto-box p {
+      color: rgba(250,247,242,0.7) !important;
+    }
+    .contacto-box strong {
+      color: var(--amarillo);
+    }
+    .contacto-box a {
+      color: var(--celeste) !important;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(250,247,242,0.45);
+      padding: 1.6rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      border-top: 2px solid var(--ink);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      color: var(--white);
+    }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 60px; left: 0; right: 0;
+        background: var(--bg);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199;
+      }
+      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid var(--borde); }
+      .nav-links.open .nav-dropdown-menu {
+        display: block; position: static; border: none;
+        background: rgba(0,0,0,0.04); min-width: auto;
+      }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-toggle { display: flex; }
+      .contenido { padding: 3rem 1.25rem 4rem; }
+      .page-header { padding: 3rem 1.5rem 2rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── DROPDOWN ── */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-toggle { cursor: pointer; }
+    .nav-sub {
+      display: none;
+      position: absolute;
+      top: 60px; left: 0;
+      background: var(--bg);
+      border: 2px solid var(--ink);
+      border-top: none;
+      list-style: none;
+      min-width: 220px;
+      z-index: 300;
+    }
+    .nav-sub li a {
+      display: block;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      line-height: 1;
+      border-bottom: 1px solid var(--borde);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-sub li:last-child a { border-bottom: none; }
+    .nav-sub li a:hover { color: var(--celeste); background: var(--parchment, #f5f0e8); }
+    .nav-dropdown:hover .nav-sub,
+    .nav-dropdown.open .nav-sub { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown">
+      <a href="proceres.html">Chateá con la historia</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html">¿Qué prócer sos?</a>
+        <a href="proceres.html" style="white-space:nowrap;">Conversá con los próceres</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <span class="page-header-tag">Legal</span>
+  <h1>Términos y<br/><span class="accent">Condiciones</span></h1>
+  <p class="page-header-meta">Próceres · Versión 2.0 · Abril 2026</p>
+</div>
+
+<!-- CONTENIDO -->
+<div class="contenido">
+
+  <!-- 1 -->
+  <div class="seccion">
+    <span class="seccion-num">01</span>
+    <h2>Introducción</h2>
+    <p>Próceres es una plataforma educativa digital desarrollada por Facundo Ezequiel Torres, con sede en la Provincia de Córdoba, República Argentina. Su sección "Conversá con la historia" integra tecnología de inteligencia artificial generativa provista por Character.ai, con fines exclusivamente educativos, culturales y de divulgación histórica.</p>
+    <p>El acceso y uso de esta plataforma implica la aceptación plena e incondicional de los presentes términos.</p>
+  </div>
+
+  <!-- 2 -->
+  <div class="seccion">
+    <span class="seccion-num">02</span>
+    <h2>Tecnologías de terceros</h2>
+    <p>El funcionamiento de los chatbots depende exclusivamente de <strong>Character.ai</strong>, plataforma externa sobre la cual el titular de este sitio no ejerce control técnico ni editorial. El uso de Character.ai se rige por sus propios términos, disponibles en <a href="https://character.ai/tos" target="_blank" rel="noopener">character.ai/tos</a>.</p>
+    <p>El titular no asume responsabilidad por interrupciones, cambios o discontinuación del servicio por parte de dicha plataforma.</p>
+  </div>
+
+  <!-- 3 -->
+  <div class="seccion">
+    <span class="seccion-num">03</span>
+    <h2>Público destinatario y uso aceptable</h2>
+    <p>Esta plataforma está destinada a <strong>docentes y adultos mayores de 18 años</strong>. No está diseñada para ser utilizada directamente por menores de edad sin supervisión docente.</p>
+    <p>Queda expresamente prohibido:</p>
+    <ul>
+      <li>Ingresar datos personales propios o de terceros en los chats</li>
+      <li>Utilizar la plataforma con fines comerciales no autorizados</li>
+      <li>Generar o solicitar contenido ofensivo, discriminatorio o que infrinja derechos de terceros</li>
+    </ul>
+    <div class="highlight">
+      <p>El usuario es responsable de verificar la precisión del contenido generado por IA, el cual puede contener errores, anacronismos o sesgos involuntarios.</p>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="seccion">
+    <span class="seccion-num">04</span>
+    <h2>Privacidad y datos personales</h2>
+    <p>Este sitio web <strong>no recopila datos personales identificables</strong>. No se utilizan formularios de registro ni bases de datos propias.</p>
+    <p>Las interacciones realizadas a través de los chatbots de Character.ai son procesadas y almacenadas exclusivamente por dicha plataforma, conforme a su política de privacidad.</p>
+    <p>Al finalizar el quiz <em>"¿Qué prócer sos?"</em>, se registran de forma <strong>completamente anónima</strong> los siguientes datos: el prócer asignado como resultado, las respuestas seleccionadas en cada pregunta y la fecha y hora del evento. No se recopila ningún dato identificable del usuario (nombre, email, IP, dispositivo). Esta información se utiliza exclusivamente con fines estadísticos y educativos.</p>
+    <p>Al finalizar el quiz interactivo "¿Qué prócer sos?" se registra de forma anónima el resultado obtenido (prócer asignado), las respuestas seleccionadas y la fecha/hora del evento. No se registra ningún dato identificable del usuario. Esta información se utiliza exclusivamente con fines estadísticos y educativos.</p>
+    <p>En cumplimiento de la <strong>Ley Argentina N° 25.326</strong> de Protección de Datos Personales, el titular se compromete a no comercializar ni ceder datos de usuarios. Para ejercer derechos de acceso, rectificación o supresión de datos, dirigirse a: <a href="mailto:abfacundotorres@gmail.com">abfacundotorres@gmail.com</a> (plazo de respuesta: hasta 10 días hábiles).</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="seccion">
+    <span class="seccion-num">05</span>
+    <h2>Limitación de responsabilidad</h2>
+    <p>El titular no garantiza la exactitud histórica, completitud ni adecuación pedagógica del contenido generado por inteligencia artificial. Las respuestas de los chatbots son generadas automáticamente y no constituyen asesoramiento profesional de ningún tipo.</p>
+    <p>La disponibilidad del servicio está sujeta a la estabilidad operativa de Character.ai y de los servicios de alojamiento web utilizados.</p>
+  </div>
+
+  <!-- 6 -->
+  <div class="seccion">
+    <span class="seccion-num">06</span>
+    <h2>Propiedad intelectual</h2>
+    <p>El diseño, código fuente y contenidos originales de esta plataforma son propiedad exclusiva de Facundo Ezequiel Torres. El nombre "Próceres" es un nombre comercial en uso, sin registro formal vigente a la fecha.</p>
+    <p>Queda prohibida la reproducción total o parcial de los contenidos originales sin autorización expresa del titular. Character.ai conserva los derechos sobre su tecnología y plataforma conforme a sus propios términos.</p>
+  </div>
+
+  <!-- 7 -->
+  <div class="seccion">
+    <span class="seccion-num">07</span>
+    <h2>Modificaciones</h2>
+    <p>El titular se reserva el derecho de actualizar estos términos en cualquier momento. Los cambios serán comunicados mediante aviso visible en el sitio y actualización de la fecha de versión al inicio de este documento.</p>
+  </div>
+
+  <!-- 8 -->
+  <div class="seccion">
+    <span class="seccion-num">08</span>
+    <h2>Jurisdicción y ley aplicable</h2>
+    <p>Estos términos se rigen por la legislación de la República Argentina, en particular la <strong>Ley N° 25.326</strong> de Protección de Datos Personales y la <strong>Ley N° 24.240</strong> de Defensa del Consumidor.</p>
+    <p>Ante cualquier controversia, las partes se someten a los Tribunales Ordinarios de la ciudad de Jesús María, Provincia de Córdoba, con renuncia a cualquier otro fuero que pudiera corresponder.</p>
+  </div>
+
+  <!-- 9 -->
+  <div class="seccion">
+    <span class="seccion-num">09</span>
+    <h2>Contacto</h2>
+    <div class="contacto-box">
+      <p><strong>Titular responsable:</strong> Facundo Ezequiel Torres</p>
+      <p><strong>Correo legal:</strong> <a href="mailto:abfacundotorres@gmail.com">abfacundotorres@gmail.com</a></p>
+      <p><strong>Plazo de respuesta:</strong> hasta 10 días hábiles</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="terminos.html">Términos y condiciones</a>
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  document.getElementById('navToggle')
+    .addEventListener('click', () =>
+      document.getElementById('navLinks').classList.toggle('open')
+    );
+
+  // dropdown mobile
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
+    toggle.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        toggle.closest('.nav-dropdown').classList.toggle('open');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

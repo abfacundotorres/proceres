@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Próceres — Historia Viva con IA</title>
+  <meta name="description" content="Chateá con los próceres de la historia argentina usando inteligencia artificial. Plataforma educativa para docentes y escuelas." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #faf7f2;
+      --white:    #ffffff;
+      --ink:      #1c1510;
+      --celeste:  #4a9eca;
+      --amarillo: #f5c842;
+      --gris:     #6b6258;
+      --borde:    #e0d8cc;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      background: var(--bg);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--celeste); }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    .nav-links li a {
+      display: block;
+      padding: 0 1.1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      line-height: 60px;
+      transition: color 0.15s;
+    }
+    .nav-links li a:hover,
+    .nav-links li.active a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 60px; left: 0;
+      background: var(--bg);
+      border: 2px solid var(--ink);
+      border-top: none;
+      min-width: 220px;
+      z-index: 300;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      border-bottom: 1px solid var(--borde);
+      line-height: 1.4;
+      transition: background 0.15s;
+    }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover { background: var(--amarillo); }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 26px;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: 55% 45%;
+      min-height: 70vh;
+    }
+
+    .hero-img {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .hero-img::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 6px;
+      background: var(--amarillo);
+    }
+
+    .hero-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 3rem 4rem 4rem;
+      background: var(--bg);
+      border-left: 2px solid var(--ink);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--amarillo);
+      color: var(--ink);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 4.5vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      margin-bottom: 1.75rem;
+    }
+    .hero-title .accent { color: var(--celeste); }
+
+    .hero-text {
+      font-size: 0.975rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris);
+      max-width: 38ch;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 2px solid var(--ink);
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, transform 0.15s;
+      width: fit-content;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-solid {
+      background: var(--ink);
+      color: var(--white);
+    }
+    .btn-solid:hover {
+      background: var(--celeste);
+      border-color: var(--celeste);
+      transform: translateY(-2px);
+    }
+
+    /* ── BANDA FRASE ── */
+    .banda {
+      background: var(--amarillo);
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 1.1rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .banda-frase {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      letter-spacing: 0.08em;
+      color: var(--ink);
+    }
+
+    .banda-autor {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.55;
+      white-space: nowrap;
+    }
+
+    /* ── SECCIONES SPLIT ── */
+    .split {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      min-height: 60vh;
+      border-top: 2px solid var(--ink);
+    }
+
+    .split.reverse {
+      grid-template-columns: 55% 45%;
+    }
+
+    .split-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 3.5rem 4rem 2.5rem;
+      background: var(--bg);
+    }
+
+    .split.reverse .split-body {
+      padding: 4rem 2.5rem 4rem 3.5rem;
+      border-left: 2px solid var(--ink);
+    }
+
+    .split-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      line-height: 1;
+      color: var(--borde);
+      display: block;
+      margin-bottom: -0.5rem;
+    }
+
+    .split-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--celeste);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .split-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .split-text {
+      font-size: 0.975rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--gris);
+      max-width: 40ch;
+      margin-bottom: 1rem;
+    }
+    .split-title .accent { color: var(--celeste); }
+
+    .split-img {
+      position: relative;
+      overflow: hidden;
+      border-left: 2px solid var(--ink);
+    }
+
+    .split.reverse .split-img {
+      border-left: none;
+      border-right: 2px solid var(--ink);
+      order: -1;
+    }
+
+    .split-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .split-img::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 6px;
+      background: var(--celeste);
+      z-index: 2;
+    }
+
+    .split.reverse .split-img::before {
+      left: auto;
+      right: 0;
+      background: var(--amarillo);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(250,247,242,0.45);
+      padding: 1.6rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      border-top: 2px solid var(--ink);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      color: var(--white);
+      letter-spacing: 0.08em;
+    }
+    footer a {
+      color: var(--amarillo);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 60px; left: 0; right: 0;
+        background: var(--bg);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199;
+      }
+      .nav-links.open li a {
+        line-height: 1;
+        padding: 1rem 2.5rem;
+        border-bottom: 1px solid var(--borde);
+      }
+      .nav-toggle { display: flex; }
+
+      .hero { grid-template-columns: 1fr; }
+      .hero-img { height: 45vw; min-height: 200px; }
+      .hero-body { padding: 2rem 1.5rem; border-left: none; border-top: 2px solid var(--ink); }
+
+      .split,
+      .split.reverse {
+        grid-template-columns: 1fr;
+      }
+      .split-img,
+      .split.reverse .split-img {
+        order: -1;
+        height: 60vw;
+        min-height: 240px;
+        border-left: none;
+        border-right: none;
+        border-bottom: 2px solid var(--ink);
+      }
+      .split-img::before,
+      .split.reverse .split-img::before { display: none; }
+
+      .split-body,
+      .split.reverse .split-body {
+        padding: 2rem 1.5rem;
+        border-left: none;
+      }
+
+      .banda { flex-direction: column; gap: 0.4rem; }
+
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── DROPDOWN ── */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-toggle { cursor: pointer; }
+    .nav-sub {
+      display: none;
+      position: absolute;
+      top: 60px; left: 0;
+      background: var(--bg);
+      border: 2px solid var(--ink);
+      border-top: none;
+      list-style: none;
+      min-width: 220px;
+      z-index: 300;
+    }
+    .nav-sub li a {
+      display: block;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      line-height: 1;
+      border-bottom: 1px solid var(--borde);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-sub li:last-child a { border-bottom: none; }
+    .nav-sub li a:hover { color: var(--celeste); background: var(--parchment, #f5f0e8); }
+    .nav-dropdown:hover .nav-sub,
+    .nav-dropdown.open .nav-sub { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li class="active"><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown">
+      <a href="proceres.html">Chateá con la historia</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html">¿Qué prócer sos?</a>
+        <a href="proceres.html" style="white-space:nowrap;">Conversá con los próceres</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<!-- HERO: San Martín a caballo -->
+<section class="hero">
+  <div class="hero-img">
+    <img src="san_martin_caballo.jpg" alt="General San Martín cruzando los Andes" loading="eager" />
+  </div>
+  <div class="hero-body">
+    <span class="hero-tag">Plataforma educativa · IA + Historia</span>
+    <h1 class="hero-title">
+      ¡Bienvenidos<br/>a la<br/><span class="accent">Revolución!</span>
+    </h1>
+    <p class="hero-text">
+      Soy el General José de San Martín y quiero saber qué prócer me acompañará a la batalla el día de hoy.<br/><br/>
+      Adelante viajero, ¡Cuéntame acerca de ti!
+    </p>
+    <a href="proceres.html" class="btn btn-solid">¡Empecemos!</a>
+  </div>
+</section>
+
+<!-- BANDA FRASE -->
+<div class="banda">
+  <span class="banda-frase">"Serás lo que debas ser, o no serás nada."</span>
+  <span class="banda-autor">— San Martín</span>
+</div>
+
+<!-- S2: San Martín retrato → Chateá con la historia -->
+<section class="split">
+  <div class="split-body">
+    <span class="split-num">02</span>
+    <span class="split-label">Chateá con la historia</span>
+    <h2 class="split-title">¡Aquí no hay <span class="accent">secretos!</span></h2>
+    <p class="split-text">
+      ¿Te imaginás chatear con San Martín? ¿Llamar por teléfono a Güemes? ¿Pedirle anécdotas de guerra a Juana Azurduy?
+    </p>
+    <p class="split-text">
+      Todos los libertadores estamos disponibles para responder tus dudas. ¡Preguntanos lo que quieras!
+    </p>
+    <a href="proceres.html" class="btn btn-solid">¡Animate!</a>
+  </div>
+  <div class="split-img">
+    <img src="san_martin_retrato.webp" alt="Retrato del General José de San Martín" loading="lazy" />
+  </div>
+</section>
+
+<!-- BANDA 2 -->
+<div class="banda">
+  <span class="banda-frase">"La ignorancia es atrevida, y el que nada sabe, nada duda."</span>
+  <span class="banda-autor">— Sarmiento</span>
+</div>
+
+<!-- S3: Sarmiento → Clases de IA -->
+<section class="split reverse">
+  <div class="split-img">
+    <img src="sarmiento.png" alt="Domingo Faustino Sarmiento" loading="lazy" />
+  </div>
+  <div class="split-body">
+    <span class="split-num">03</span>
+    <span class="split-label">Docencia e IA</span>
+    <h2 class="split-title">Aprendé a usar <span class="accent">la IA</span></h2>
+    <p class="split-text">
+      Nadie nació sabiendo. Una serie de videos cortitos que te explican todo en 1 minuto o menos.
+    </p>
+    <p class="split-text">
+      Herramientas concretas para usar la inteligencia artificial en el aula desde hoy.
+    </p>
+    <a href="clases-ia.html" class="btn btn-solid">¡Empezamos desde cero!</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="terminos.html">Términos y condiciones</a>
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  document.getElementById('navToggle')
+    .addEventListener('click', () =>
+      document.getElementById('navLinks').classList.toggle('open')
+    );
+
+  // dropdown mobile
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
+    toggle.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        toggle.closest('.nav-dropdown').classList.toggle('open');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

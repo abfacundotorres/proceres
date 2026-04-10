@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Qué prócer sos? — Próceres · La historia te escucha</title>
+  <meta name="description" content="Descubrí qué prócer de la historia argentina sos vos. Quiz interactivo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #faf7f2;
+      --white:    #ffffff;
+      --ink:      #1c1510;
+      --celeste:  #4a9eca;
+      --amarillo: #f5c842;
+      --gris:     #6b6258;
+      --borde:    #e0d8cc;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 2.5rem;
+      background: var(--bg); border-bottom: 2px solid var(--ink);
+    }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; position: relative; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 60px; left: 0; background: var(--bg); border: 2px solid var(--ink); border-top: none; min-width: 220px; z-index: 300; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.75rem 1.2rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 1.2; border-bottom: 1px solid var(--borde); transition: background 0.15s, color 0.15s; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover { background: var(--amarillo); color: var(--ink); }
+    .nav-dropdown-menu a.active { color: var(--celeste); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* WRAPPER */
+    .quiz-wrapper { margin-top: 60px; min-height: calc(100vh - 60px); display: flex; flex-direction: column; }
+
+    /* INTRO */
+    #screen-intro {
+      display: flex; flex-direction: column;
+      min-height: calc(100vh - 60px);
+    }
+    .intro-hero {
+      position: relative; flex: 1;
+      min-height: 60vh; overflow: hidden;
+    }
+    .intro-hero img {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center center; display: block;
+      filter: brightness(0.6);
+    }
+    .intro-hero-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+    }
+    .intro-tag {
+      display: inline-block; background: var(--amarillo); color: var(--ink);
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1.5rem;
+    }
+    .intro-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 7rem); line-height: 0.9;
+      letter-spacing: 0.02em; color: var(--white); margin-bottom: 1rem;
+    }
+    .intro-title .accent { color: var(--amarillo); }
+    .intro-desc {
+      font-size: 1rem; font-weight: 300; line-height: 1.8;
+      color: rgba(255,255,255,0.85); max-width: 48ch; margin: 0 auto 2.5rem;
+    }
+    .btn-start {
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 1rem 2.5rem; font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--amarillo); color: var(--ink);
+      border: 2px solid var(--amarillo); cursor: pointer;
+      transition: background 0.18s, transform 0.15s;
+    }
+    .btn-start:hover { background: var(--white); border-color: var(--white); transform: translateY(-2px); }
+
+    /* QUIZ */
+    #screen-quiz { display: none; flex: 1; flex-direction: column; }
+
+    .progress-bar-wrap { height: 5px; background: var(--borde); border-bottom: 2px solid var(--ink); }
+    .progress-bar-fill { height: 100%; background: var(--celeste); transition: width 0.4s ease; }
+
+    .quiz-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      min-height: calc(100vh - 125px);
+    }
+
+    /* imagen de pregunta */
+    .quiz-img-col {
+      position: relative; overflow: hidden;
+      border-right: 2px solid var(--ink);
+    }
+    .quiz-img-col img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block; transition: opacity 0.4s ease;
+    }
+    .quiz-counter-overlay {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 0.1em;
+      color: var(--white);
+      background: rgba(28,21,16,0.65);
+      padding: 0.3rem 0.8rem;
+      backdrop-filter: blur(4px);
+    }
+    .quiz-counter-overlay span { color: var(--amarillo); }
+
+    /* contenido pregunta */
+    .quiz-content-col {
+      display: flex; flex-direction: column;
+      padding: 2.5rem 2.5rem 1.5rem;
+      background: var(--bg);
+      overflow-y: auto;
+    }
+
+    .question-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      line-height: 1.05; letter-spacing: 0.02em;
+      color: var(--ink); margin-bottom: 1.75rem;
+    }
+
+    .options-list { display: flex; flex-direction: column; gap: 0; border: 2px solid var(--ink); flex: 1; }
+
+    .option-btn {
+      padding: 1rem 1.25rem; background: var(--bg);
+      border: none; border-bottom: 1px solid var(--borde);
+      text-align: left; font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem; font-weight: 400; line-height: 1.5;
+      color: var(--ink); cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      display: flex; align-items: flex-start; gap: 0.75rem;
+    }
+    .option-btn:last-child { border-bottom: none; }
+    .option-btn:hover { background: var(--amarillo); }
+    .option-btn.selected { background: var(--celeste); color: var(--white); }
+    .option-letter {
+      font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem;
+      letter-spacing: 0.1em; color: var(--celeste);
+      flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .option-btn.selected .option-letter { color: rgba(255,255,255,0.7); }
+    .option-btn:hover .option-letter { color: var(--ink); }
+
+    .quiz-nav-row {
+      padding: 1.25rem 0 0;
+      display: flex; justify-content: flex-end;
+    }
+    .btn-next {
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--ink); color: var(--white);
+      border: 2px solid var(--ink); cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.15s;
+      opacity: 0.35; pointer-events: none;
+    }
+    .btn-next.active { opacity: 1; pointer-events: all; }
+    .btn-next.active:hover { background: var(--celeste); border-color: var(--celeste); transform: translateY(-2px); }
+
+    /* RESULTADO */
+    #screen-result {
+      display: none; flex: 1; flex-direction: column;
+    }
+    .result-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 65px);
+    }
+    .result-img-col {
+      position: relative; overflow: hidden;
+      border-right: 2px solid var(--ink);
+    }
+    .result-img-col img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+    }
+    .result-img-col::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 6px; background: var(--amarillo);
+    }
+    .result-content-col {
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 4rem 3.5rem;
+      background: var(--bg);
+    }
+    .result-tag {
+      display: inline-block; background: var(--amarillo); color: var(--ink);
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 0.3rem 0.75rem;
+      margin-bottom: 1.5rem; width: fit-content;
+    }
+    .result-sos {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gris); margin-bottom: 0.5rem;
+    }
+    .result-nombre {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 0.95; color: var(--ink); margin-bottom: 1.5rem;
+    }
+    .result-nombre .accent { color: var(--celeste); }
+    .result-desc {
+      font-size: 0.975rem; font-weight: 300; line-height: 1.8;
+      color: var(--gris); max-width: 44ch; margin-bottom: 2rem;
+    }
+    .result-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-retry {
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: transparent; color: var(--ink);
+      border: 2px solid var(--ink); cursor: pointer;
+      transition: background 0.18s, color 0.18s; text-decoration: none;
+    }
+    .btn-retry:hover { background: var(--ink); color: var(--white); }
+    .btn-chat {
+      font-family: 'DM Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--ink); color: var(--white);
+      border: 2px solid var(--ink); cursor: pointer;
+      transition: background 0.18s, border-color 0.18s; text-decoration: none;
+    }
+    .btn-chat:hover { background: var(--celeste); border-color: var(--celeste); }
+    .sending-msg { font-size: 0.75rem; color: var(--gris); letter-spacing: 0.08em; margin-top: 1rem; min-height: 1.2em; }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink); color: rgba(250,247,242,0.45);
+      padding: 1.6rem 2.5rem; display: flex;
+      justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem; font-size: 0.75rem;
+      letter-spacing: 0.06em; border-top: 2px solid var(--ink); margin-top: auto;
+    }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 2px solid var(--ink); z-index: 199; }
+      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid var(--borde); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-toggle { display: flex; }
+
+      .quiz-layout { grid-template-columns: 1fr; }
+      .quiz-img-col { height: 35vw; min-height: 200px; border-right: none; border-bottom: 2px solid var(--ink); }
+      .quiz-content-col { padding: 1.5rem; }
+
+      .result-layout { grid-template-columns: 1fr; }
+      .result-img-col { height: 60vw; min-height: 260px; border-right: none; border-bottom: 2px solid var(--ink); }
+      .result-content-col { padding: 2rem 1.5rem; }
+
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="proceres.html">Chateá con la historia</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html" class="active">¿Qué prócer sos?</a>
+        <a href="proceres.html" style="white-space:nowrap;">Conversá con los próceres</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="quiz-wrapper">
+
+  <!-- INTRO -->
+  <div id="screen-intro">
+    <div class="intro-hero">
+      <img src="quiz_portal.jpg" alt="Portal al pasado" loading="eager" />
+      <div class="intro-hero-overlay">
+        <span class="intro-tag">Quiz interactivo · Historia Argentina</span>
+        <h1 class="intro-title">¿Qué<br/><span class="accent">prócer</span><br/>sos?</h1>
+        <p class="intro-desc">
+          Un extraño suceso ha abierto un portal en el tiempo. Respondé estas preguntas y la historia revelará tu verdadero papel.
+        </p>
+        <button class="btn-start" id="btnStart">▶ Empezar la misión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="quiz-layout">
+      <div class="quiz-img-col">
+        <img id="questionImg" src="" alt="" />
+        <div class="quiz-counter-overlay">Pregunta <span id="qNum">1</span> de 9</div>
+      </div>
+      <div class="quiz-content-col">
+        <p class="question-text" id="questionText"></p>
+        <div class="options-list" id="optionsList"></div>
+        <div class="quiz-nav-row">
+          <button class="btn-next" id="btnNext">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="screen-result">
+    <div class="result-layout">
+      <div class="result-img-col">
+        <img id="resultImg" src="" alt="" />
+      </div>
+      <div class="result-content-col">
+        <span class="result-tag">Tu resultado</span>
+        <p class="result-sos">Sos</p>
+        <h2 class="result-nombre" id="resultNombre"></h2>
+        <p class="result-desc" id="resultDesc"></p>
+        <div class="result-btns">
+          <button class="btn-retry" id="btnRetry">↺ Intentar de nuevo</button>
+          <a class="btn-chat" id="btnChat" href="#" target="_blank" rel="noopener">▶ Chatear con este prócer</a>
+        </div>
+        <p class="sending-msg" id="sendingMsg"></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="terminos.html">Términos y condiciones</a>
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz-K-2XRSJCss7jWnStJt8sed5kotnk3p3OgXrdvAFCRHYXxMCyjevsSyfN-qvYopfu1Q/exec';
+
+  const PROCERES = {
+    sanmartin: {
+      nombre: "José de\nSan Martín",
+      desc: "Estratega, visionario y líder. Tu espíritu cruzaría los Andes sin dudar. Sos quien traza el camino cuando nadie más se anima.",
+      img: "san_martin_retrato.webp",
+      chat: "https://character.ai/chat/kJ_vyW8EymFylS5c31S2qeNGRsKECfzcx6qRneuacPc"
+    },
+    guemes: {
+      nombre: "Martín Miguel\nde Güemes",
+      desc: "Guerrero de las fronteras, defensor incansable. Tu fuerza está en el terreno y en la gente. Sos el que protege lo propio a cualquier costo.",
+      img: "guemes.png",
+      chat: "https://character.ai/chat/S2Ut6E7WVFHYz8bO3kt6IsUdofnBSwSPUahsI3VyH8Q"
+    },
+    remedios: {
+      nombre: "María Remedios\ndel Valle",
+      desc: "Valiente, compasiva y resiliente. Tu lugar está donde más se necesita, cuidando y sosteniendo a quienes luchan.",
+      img: "remedios.png",
+      chat: "https://character.ai/chat/KYLZDYOYEJKS16EOtpaLZbMZ6lCVutbfF3EihXYY3fw"
+    },
+    belgrano: {
+      nombre: "Manuel\nBelgrano",
+      desc: "Diplomático, educador y constructor de nación. Sos quien ve más allá del campo de batalla: las ideas, las leyes, la economía.",
+      img: "belgrano_nuevo.png",
+      chat: "https://character.ai/chat/f8N-bbwf6RcjNvBYf5rCfAUIZcY6xXWTLM_n0gWO73s"
+    },
+    azurduy: {
+      nombre: "Juana\nAzurduy",
+      desc: "Libre, observadora y audaz. Sos quien actúa desde adentro, con astucia y convicción, y escribe el futuro que todavía nadie imagina.",
+      img: "azurduy.png",
+      chat: "https://character.ai/chat/472a9SoIq4697hTOIL6gb0osHjhs-OwLxV1GPVBusjA"
+    }
+  };
+
+  const PREGUNTAS = [
+    {
+      texto: "¿Cómo encontraste este portal al pasado?",
+      img: "quiz_portal.jpg",
+      opciones: [
+        { texto: "Un amigo viajero del tiempo me lo recomendó.", procer: "azurduy" },
+        { texto: "Vi un pergamino digital en redes sociales.", procer: "remedios" },
+        { texto: "Llegué con mi escuela, en una caravana de exploradores.", procer: "belgrano" },
+        { texto: "Lo descubrí por mi cuenta, el destino me trajo aquí.", procer: "guemes" },
+        { texto: "Las autoridades me enviaron una paloma mensajera especial.", procer: "sanmartin" }
+      ]
+    },
+    {
+      texto: "¿Desde qué tierras has llegado?",
+      img: "zona_rural.webp",
+      opciones: [
+        { texto: "Vengo de este mismo suelo, ¡soy un patriota local!", procer: "belgrano" },
+        { texto: "Llego desde localidades vecinas de esta amada Córdoba.", procer: "sanmartin" },
+        { texto: "He cruzado las provincias del Norte para llegar hasta aquí.", procer: "guemes" },
+        { texto: "Vengo del Sur de esta noble patria a sumar mi sable.", procer: "remedios" },
+        { texto: "Soy un viajero internacional, traigo noticias de otras tierras.", procer: "azurduy" }
+      ]
+    },
+    {
+      texto: "Si fueras parte de una revolución, ¿Qué rol elegirías?",
+      img: "quiz_revolucion.avif",
+      opciones: [
+        { texto: "ESTRATEGA — Dibujo mapas, planeo batallas y organizo la resistencia.", procer: "sanmartin" },
+        { texto: "GUERRERO/A — Estoy en la primera línea de combate.", procer: "azurduy" },
+        { texto: "DIPLOMÁTICO/A — Negocio acuerdos y evito enfrentamientos innecesarios.", procer: "belgrano" },
+        { texto: "ORADOR/A — Convoco a la gente con discursos apasionantes.", procer: "guemes" },
+        { texto: "MÉDICO/A — Salvo las vidas de mis compatriotas, esquivando balas.", procer: "remedios" }
+      ]
+    },
+    {
+      texto: "Si pudieras escoger un lugar, ¿Dónde te unirías a la revolución?",
+      img: "cruce_andes.jpg",
+      opciones: [
+        { texto: "En la cordillera de los Andes.", procer: "sanmartin" },
+        { texto: "En los llanos de las provincias, luchando en las batallas de campo.", procer: "remedios" },
+        { texto: "En las ciudades donde se forjan los acuerdos y las decisiones.", procer: "belgrano" },
+        { texto: "En la zona de la modernización, luchando por un futuro tecnológico.", procer: "azurduy" },
+        { texto: "En el Norte argentino, rodeado de gauchos.", procer: "guemes" }
+      ]
+    },
+    {
+      texto: "Imagina que la patria necesita de tus habilidades. ¿Cómo la ayudarías?",
+      img: "quiz_batalla.avif",
+      opciones: [
+        { texto: "Construyendo escuelas y educando a la gente.", procer: "belgrano" },
+        { texto: "Inventando nuevas tecnologías para mejorar la vida.", procer: "sanmartin" },
+        { texto: "Escribiendo ideas revolucionarias para cambiar el mundo.", procer: "azurduy" },
+        { texto: "Organizando la economía y administrando recursos.", procer: "remedios" },
+        { texto: "Convocando a mis compatriotas para conocer sus necesidades.", procer: "guemes" }
+      ]
+    },
+    {
+      texto: "Una espía enemiga ha infiltrado la tropa. ¿Cómo la descubres?",
+      img: "quiz_espias.jpg",
+      opciones: [
+        { texto: "Usando la lógica y preguntas engañosas.", procer: "sanmartin" },
+        { texto: "Exigiéndole que cante el himno nacional completo.", procer: "belgrano" },
+        { texto: "Ofreciéndole cambiar de bando, con empatía.", procer: "remedios" },
+        { texto: "Observando pequeños detalles en su comportamiento.", procer: "azurduy" },
+        { texto: "Confrontando a toda la tropa, persona por persona.", procer: "guemes" }
+      ]
+    },
+    {
+      texto: "Si fueras a un campo de batalla, ¿Qué te llevarías para asegurar la victoria?",
+      img: "quiz_campo_batalla.jpg",
+      opciones: [
+        { texto: "Un ejército bien entrenado y disciplinado.", procer: "azurduy" },
+        { texto: "Una táctica inesperada para sorprender al enemigo.", procer: "guemes" },
+        { texto: "Un tratado de paz para evitar más conflictos.", procer: "belgrano" },
+        { texto: "Elementos de curación, para proteger a los nuestros.", procer: "remedios" },
+        { texto: "Libros de estrategia y papiros en blanco.", procer: "sanmartin" }
+      ]
+    },
+    {
+      texto: "Si pudieras elegir una época para visitar, ¿Cuál sería?",
+      img: "quiz_epoca.webp",
+      opciones: [
+        { texto: "1810 — La Revolución de Mayo.", procer: "remedios" },
+        { texto: "1816 — La Declaración de la Independencia.", procer: "sanmartin" },
+        { texto: "1853 — La Constitución Nacional.", procer: "belgrano" },
+        { texto: "1900 — La modernización de Argentina.", procer: "guemes" },
+        { texto: "2100 — El futuro de nuestro país.", procer: "azurduy" }
+      ]
+    },
+    {
+      texto: "Si pudieras elegir: ¿Cómo te gustaría aprender la historia argentina?",
+      img: "quiz_aprender.jpg",
+      opciones: [
+        { texto: "Con videos cortos y emocionantes.", procer: "sanmartin" },
+        { texto: "Como un videojuego donde yo elijo lo que sucede.", procer: "guemes" },
+        { texto: "Como un podcast para escuchar mientras hago otras tareas.", procer: "belgrano" },
+        { texto: "Con trivias interactivas y divertidas.", procer: "remedios" },
+        { texto: "Con debates grupales y juegos de teatro.", procer: "azurduy" }
+      ]
+    }
+  ];
+
+  let currentQ = 0;
+  let selectedOption = null;
+  let selectedTexts = [];
+  const scores = { sanmartin:0, guemes:0, remedios:0, belgrano:0, azurduy:0 };
+
+  const screenIntro  = document.getElementById('screen-intro');
+  const screenQuiz   = document.getElementById('screen-quiz');
+  const screenResult = document.getElementById('screen-result');
+  const progressBar  = document.getElementById('progressBar');
+  const qNum         = document.getElementById('qNum');
+  const questionText = document.getElementById('questionText');
+  const questionImg  = document.getElementById('questionImg');
+  const optionsList  = document.getElementById('optionsList');
+  const btnNext      = document.getElementById('btnNext');
+  const sendingMsg   = document.getElementById('sendingMsg');
+
+  function showQuestion(index) {
+    const q = PREGUNTAS[index];
+    selectedOption = null;
+    btnNext.classList.remove('active');
+    qNum.textContent = index + 1;
+    progressBar.style.width = ((index / PREGUNTAS.length) * 100) + '%';
+    questionText.textContent = q.texto;
+    questionImg.style.opacity = '0';
+    questionImg.src = q.img;
+    questionImg.onload = () => { questionImg.style.opacity = '1'; };
+    optionsList.innerHTML = '';
+    const letters = ['A','B','C','D','E'];
+    q.opciones.forEach((op, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${op.texto}</span>`;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedOption = op.procer;
+        selectedTexts[index] = op.texto;
+        btnNext.classList.add('active');
+      });
+      optionsList.appendChild(btn);
+    });
+  }
+
+  function nextQuestion() {
+    if (!selectedOption) return;
+    scores[selectedOption]++;
+    currentQ++;
+    if (currentQ < PREGUNTAS.length) {
+      showQuestion(currentQ);
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    progressBar.style.width = '100%';
+    const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+    const p = PROCERES[winner];
+    screenQuiz.style.display = 'none';
+    screenResult.style.display = 'flex';
+    document.getElementById('resultImg').src = p.img;
+    document.getElementById('resultImg').alt = p.nombre;
+    document.getElementById('resultNombre').innerHTML = p.nombre.replace('\n','<br/>');
+    document.getElementById('resultDesc').textContent = p.desc;
+    document.getElementById('btnChat').href = p.chat;
+    window.scrollTo(0,0);
+    sendToSheets(winner, selectedTexts);
+  }
+
+  function sendToSheets(procer, respuestas) {
+    sendingMsg.textContent = 'Guardando resultado...';
+    const payload = { procer, r1:respuestas[0]||'', r2:respuestas[1]||'', r3:respuestas[2]||'', r4:respuestas[3]||'', r5:respuestas[4]||'', r6:respuestas[5]||'', r7:respuestas[6]||'', r8:respuestas[7]||'', r9:respuestas[8]||'' };
+    fetch(SHEETS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) })
+      .then(() => { sendingMsg.textContent = '✓ Resultado guardado de forma anónima.'; })
+      .catch(() => { sendingMsg.textContent = ''; });
+  }
+
+  function resetQuiz() {
+    currentQ = 0; selectedOption = null; selectedTexts = [];
+    Object.keys(scores).forEach(k => scores[k] = 0);
+    screenResult.style.display = 'none';
+    screenQuiz.style.display = 'flex';
+    showQuestion(0);
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById('btnStart').addEventListener('click', () => {
+    screenIntro.style.display = 'none';
+    screenQuiz.style.display = 'flex';
+    showQuestion(0);
+  });
+  btnNext.addEventListener('click', nextQuestion);
+  document.getElementById('btnRetry').addEventListener('click', resetQuiz);
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+</script>
+</body>
+</html>
