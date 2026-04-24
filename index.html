@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Próceres — Historia Viva con IA</title>
-  <meta name="description" content="Chateá con los próceres de la historia argentina usando inteligencia artificial. Plataforma educativa para docentes y escuelas." />
+  <title>Próceres — Héroes de la Patria</title>
+  <meta name="description" content="Plataforma educativa interactiva sobre historia argentina. Quiz, actividades y clases de IA para docentes." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg:       #faf7f2;
       --white:    #ffffff;
@@ -20,440 +19,194 @@
       --gris:     #6b6258;
       --borde:    #e0d8cc;
     }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      overflow-x: hidden;
-    }
+    html, body { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--white); overflow-x: hidden; }
 
     /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2.5rem;
-      background: var(--bg);
-      border-bottom: 2px solid var(--ink);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 2.5rem;
+      background: rgba(28,21,16,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid rgba(245,200,66,0.4);
     }
-
-    .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem;
-      letter-spacing: 0.08em;
-      color: var(--ink);
-      text-decoration: none;
-    }
-    .nav-logo span { color: var(--celeste); }
-
-    .nav-links {
-      display: flex;
-      list-style: none;
-    }
-    .nav-links li a {
-      display: block;
-      padding: 0 1.1rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--ink);
-      line-height: 60px;
-      transition: color 0.15s;
-    }
-    .nav-links li a:hover,
-    .nav-links li.active a { color: var(--celeste); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--amarillo); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: rgba(255,255,255,0.75); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--amarillo); }
     .nav-dropdown { position: relative; }
     .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
-    .nav-dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 60px; left: 0;
-      background: var(--bg);
-      border: 2px solid var(--ink);
-      border-top: none;
-      min-width: 220px;
-      z-index: 300;
-    }
+    .nav-dropdown-menu { display: none; position: absolute; top: 60px; left: 0; background: rgba(28,21,16,0.97); border: 2px solid rgba(245,200,66,0.4); border-top: none; min-width: 220px; z-index: 300; }
     .nav-dropdown:hover .nav-dropdown-menu { display: block; }
-    .nav-dropdown-menu a {
-      display: block;
-      padding: 0.75rem 1.25rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--ink);
-      border-bottom: 1px solid var(--borde);
-      line-height: 1.4;
-      transition: background 0.15s;
-    }
+    .nav-dropdown-menu a { display: block; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: rgba(255,255,255,0.75); border-bottom: 1px solid rgba(255,255,255,0.08); line-height: 1.4; transition: background 0.15s, color 0.15s; }
     .nav-dropdown-menu a:last-child { border-bottom: none; }
-    .nav-dropdown-menu a:hover { background: var(--amarillo); }
+    .nav-dropdown-menu a:hover { background: var(--amarillo); color: var(--ink); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--amarillo); }
 
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-    .nav-toggle span {
-      display: block;
-      width: 26px;
-      height: 2px;
-      background: var(--ink);
-    }
-
-    /* ── HERO ── */
-    .hero {
+    /* ── PORTADA 3 COLUMNAS ── */
+    .portada {
       margin-top: 60px;
+      height: calc(100vh - 60px);
       display: grid;
-      grid-template-columns: 55% 45%;
-      min-height: 70vh;
+      grid-template-columns: 1fr 1fr 1fr;
     }
 
-    .hero-img {
+    .col {
       position: relative;
       overflow: hidden;
-    }
-    .hero-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
-    .hero-img::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0; bottom: 0;
-      width: 6px;
-      background: var(--amarillo);
-    }
-
-    .hero-body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4rem 3rem 4rem 4rem;
-      background: var(--bg);
-      border-left: 2px solid var(--ink);
-    }
-
-    .hero-tag {
-      display: inline-block;
-      background: var(--amarillo);
-      color: var(--ink);
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 0.3rem 0.75rem;
-      margin-bottom: 1.5rem;
-      width: fit-content;
-    }
-
-    .hero-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3rem, 4.5vw, 4.5rem);
-      line-height: 0.95;
-      letter-spacing: 0.02em;
-      color: var(--ink);
-      margin-bottom: 1.75rem;
-    }
-    .hero-title .accent { color: var(--celeste); }
-
-    .hero-text {
-      font-size: 0.975rem;
-      font-weight: 300;
-      line-height: 1.8;
-      color: var(--gris);
-      max-width: 38ch;
-      margin-bottom: 2.5rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.85rem 2rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: 2px solid var(--ink);
       cursor: pointer;
-      transition: background 0.18s, color 0.18s, transform 0.15s;
-      width: fit-content;
-      font-family: 'DM Sans', sans-serif;
+      border-right: 2px solid rgba(255,255,255,0.15);
+      text-decoration: none;
     }
-    .btn-solid {
-      background: var(--ink);
-      color: var(--white);
+    .col:last-child { border-right: none; }
+
+    /* imagen de fondo */
+    .col-bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s ease, filter 0.4s ease;
+      filter: brightness(0.45) saturate(0.8);
     }
-    .btn-solid:hover {
-      background: var(--celeste);
-      border-color: var(--celeste);
-      transform: translateY(-2px);
+    .col:hover .col-bg {
+      transform: scale(1.04);
+      filter: brightness(0.55) saturate(1);
     }
 
-    /* ── BANDA FRASE ── */
-    .banda {
-      background: var(--amarillo);
-      border-top: 2px solid var(--ink);
-      border-bottom: 2px solid var(--ink);
-      padding: 1.1rem 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      text-align: center;
+    /* overlay gradiente */
+    .col-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(28,21,16,0.85) 0%, rgba(28,21,16,0.2) 50%, transparent 100%);
     }
 
-    .banda-frase {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(1rem, 2.2vw, 1.4rem);
-      letter-spacing: 0.08em;
-      color: var(--ink);
-    }
-
-    .banda-autor {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--ink);
-      opacity: 0.55;
-      white-space: nowrap;
-    }
-
-    /* ── SECCIONES SPLIT ── */
-    .split {
-      display: grid;
-      grid-template-columns: 45% 55%;
-      min-height: 60vh;
-      border-top: 2px solid var(--ink);
-    }
-
-    .split.reverse {
-      grid-template-columns: 55% 45%;
-    }
-
-    .split-body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4rem 3.5rem 4rem 2.5rem;
-      background: var(--bg);
-    }
-
-    .split.reverse .split-body {
-      padding: 4rem 2.5rem 4rem 3.5rem;
-      border-left: 2px solid var(--ink);
-    }
-
-    .split-num {
+    /* número grande decorativo */
+    .col-num {
+      position: absolute;
+      top: 1.5rem; left: 1.75rem;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 5rem;
       line-height: 1;
-      color: var(--borde);
-      display: block;
-      margin-bottom: -0.5rem;
-    }
-
-    .split-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--celeste);
-      margin-bottom: 0.6rem;
-      display: block;
-    }
-
-    .split-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2rem, 3vw, 3rem);
-      line-height: 1;
+      color: rgba(255,255,255,0.08);
       letter-spacing: 0.02em;
-      color: var(--ink);
-      margin-bottom: 1.5rem;
+      pointer-events: none;
     }
 
-    .split-text {
-      font-size: 0.975rem;
-      font-weight: 300;
-      line-height: 1.8;
-      color: var(--gris);
-      max-width: 40ch;
-      margin-bottom: 1rem;
-    }
-    .split-title .accent { color: var(--celeste); }
-
-    .split-img {
-      position: relative;
-      overflow: hidden;
-      border-left: 2px solid var(--ink);
-    }
-
-    .split.reverse .split-img {
-      border-left: none;
-      border-right: 2px solid var(--ink);
-      order: -1;
-    }
-
-    .split-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
-
-    .split-img::before {
-      content: '';
+    /* contenido */
+    .col-content {
       position: absolute;
-      top: 0; left: 0; bottom: 0;
-      width: 6px;
-      background: var(--celeste);
-      z-index: 2;
+      bottom: 0; left: 0; right: 0;
+      padding: 2.5rem 2rem;
     }
 
-    .split.reverse .split-img::before {
-      left: auto;
-      right: 0;
-      background: var(--amarillo);
+    .col-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.7);
     }
+    .col:hover .col-tag { border-color: var(--amarillo); color: var(--amarillo); }
+
+    .col-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+    .col-title .accent { color: var(--amarillo); }
+
+    .col-desc {
+      font-size: 0.82rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.65);
+      max-width: 28ch;
+      margin-bottom: 1.25rem;
+    }
+
+    .col-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--amarillo);
+      padding: 0.6rem 1.25rem;
+      transition: background 0.18s, transform 0.15s;
+    }
+    .col:hover .col-cta { background: var(--white); transform: translateY(-2px); }
+
+    /* color accent por columna */
+    .col-1 .col-bg { background-image: url('san_martin_retrato.webp'); }
+    .col-2 .col-bg { background-image: url('cruce_andes.jpg'); }
+    .col-3 .col-bg { background-image: url('sarmiento.png'); }
+
+    /* borde top de color */
+    .col-1::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--amarillo); z-index: 2; }
+    .col-2::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--celeste); z-index: 2; }
+    .col-3::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #c85a2a; z-index: 2; }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--ink);
-      color: rgba(250,247,242,0.45);
-      padding: 1.6rem 2.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.06em;
-      border-top: 2px solid var(--ink);
+      background: var(--ink); color: rgba(250,247,242,0.35);
+      padding: 1rem 2.5rem; display: flex;
+      justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem; font-size: 0.72rem;
+      letter-spacing: 0.06em; border-top: 1px solid rgba(255,255,255,0.08);
     }
-    .footer-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
-      color: var(--white);
-      letter-spacing: 0.08em;
-    }
-    footer a {
-      color: var(--amarillo);
-      text-decoration: none;
-    }
-    footer a:hover { text-decoration: underline; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
     .footer-links { display: flex; gap: 1.5rem; }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .portada {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 50vh);
+        height: auto;
+      }
+      .col { border-right: none; border-bottom: 2px solid rgba(255,255,255,0.15); }
+      .col:last-child { border-bottom: none; }
+      .col-num { font-size: 4rem; }
+      .col-title { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+    }
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .nav-links.open {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 60px; left: 0; right: 0;
-        background: var(--bg);
-        border-bottom: 2px solid var(--ink);
+        display: flex; flex-direction: column;
+        position: fixed; top: 60px; left: 0; right: 0;
+        background: rgba(28,21,16,0.97);
+        border-bottom: 1px solid rgba(245,200,66,0.3);
         z-index: 199;
       }
-      .nav-links.open li a {
-        line-height: 1;
-        padding: 1rem 2.5rem;
-        border-bottom: 1px solid var(--borde);
-      }
+      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(255,255,255,0.05); min-width: auto; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
       .nav-toggle { display: flex; }
-
-      .hero { grid-template-columns: 1fr; }
-      .hero-img { height: 45vw; min-height: 200px; }
-      .hero-body { padding: 2rem 1.5rem; border-left: none; border-top: 2px solid var(--ink); }
-
-      .split,
-      .split.reverse {
-        grid-template-columns: 1fr;
-      }
-      .split-img,
-      .split.reverse .split-img {
-        order: -1;
-        height: 60vw;
-        min-height: 240px;
-        border-left: none;
-        border-right: none;
-        border-bottom: 2px solid var(--ink);
-      }
-      .split-img::before,
-      .split.reverse .split-img::before { display: none; }
-
-      .split-body,
-      .split.reverse .split-body {
-        padding: 2rem 1.5rem;
-        border-left: none;
-      }
-
-      .banda { flex-direction: column; gap: 0.4rem; }
-
       footer { flex-direction: column; align-items: flex-start; }
     }
-
-    /* ── DROPDOWN ── */
-    .nav-dropdown { position: relative; }
-    .nav-dropdown-toggle { cursor: pointer; }
-    .nav-sub {
-      display: none;
-      position: absolute;
-      top: 60px; left: 0;
-      background: var(--bg);
-      border: 2px solid var(--ink);
-      border-top: none;
-      list-style: none;
-      min-width: 220px;
-      z-index: 300;
-    }
-    .nav-sub li a {
-      display: block;
-      padding: 0.75rem 1.2rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--ink);
-      line-height: 1;
-      border-bottom: 1px solid var(--borde);
-      transition: color 0.15s, background 0.15s;
-    }
-    .nav-sub li:last-child a { border-bottom: none; }
-    .nav-sub li a:hover { color: var(--celeste); background: var(--parchment, #f5f0e8); }
-    .nav-dropdown:hover .nav-sub,
-    .nav-dropdown.open .nav-sub { display: block; }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <a href="index.html" class="nav-logo">Próceres<span> · Héroes de la Patria</span></a>
   <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
-    <ul class="nav-links" id="navLinks">
+  <ul class="nav-links" id="navLinks">
     <li class="active"><a href="index.html">Inicio</a></li>
     <li class="nav-dropdown">
       <a href="#">Actividades</a>
@@ -469,99 +222,66 @@
   </ul>
 </nav>
 
-<!-- HERO: San Martín a caballo -->
-<section class="hero">
-  <div class="hero-img">
-    <img src="san_martin_caballo.jpg" alt="General San Martín cruzando los Andes" loading="eager" />
-  </div>
-  <div class="hero-body">
-    <span class="hero-tag">Plataforma educativa · IA + Historia</span>
-    <h1 class="hero-title">
-      ¡Bienvenidos<br/>a la<br/><span class="accent">Revolución!</span>
-    </h1>
-    <p class="hero-text">
-      Soy el General José de San Martín y quiero saber qué prócer me acompañará a la batalla el día de hoy.<br/><br/>
-      Adelante viajero, ¡Cuéntame acerca de ti!
-    </p>
-    <a href="quiz.html" class="btn btn-solid">¡Empecemos!</a>
-  </div>
-</section>
+<!-- PORTADA 3 COLUMNAS -->
+<main class="portada">
 
-<!-- BANDA FRASE -->
-<div class="banda">
-  <span class="banda-frase">"Serás lo que debas ser, o no serás nada."</span>
-  <span class="banda-autor">— San Martín</span>
-</div>
-
-<!-- S2: Actividades -->
-<section class="split">
-  <div class="split-body">
-    <span class="split-num">02</span>
-    <span class="split-label">Actividades interactivas</span>
-    <h2 class="split-title">Aprendé jugando la <span class="accent">historia</span></h2>
-    <p class="split-text">
-      Rompecabezas, líneas de tiempo, desafíos de logística y un quiz para descubrir qué prócer sos. Actividades diseñadas para el aula.
-    </p>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-      <a href="quiz.html" class="btn btn-solid">¿Qué prócer sos?</a>
-      <a href="timeline.html" class="btn btn-solid" style="background:var(--celeste);border-color:var(--celeste);">Línea de tiempo</a>
+  <!-- COLUMNA 1: QUIZ -->
+  <a href="quiz.html" class="col col-1">
+    <div class="col-bg"></div>
+    <div class="col-overlay"></div>
+    <span class="col-num">01</span>
+    <div class="col-content">
+      <span class="col-tag">Quiz interactivo</span>
+      <h2 class="col-title">¿Qué<br/><span class="accent">prócer</span><br/>sos?</h2>
+      <p class="col-desc">Respondé 9 preguntas y descubrí qué héroe de la patria llevas dentro.</p>
+      <span class="col-cta">▶ Empezar</span>
     </div>
-  </div>
-  <div class="split-img">
-    <img src="cruce_andes.jpg" alt="Cruce de los Andes" loading="lazy" />
-  </div>
-</section>
+  </a>
 
-<!-- BANDA 2 -->
-<div class="banda">
-  <span class="banda-frase">"La ignorancia es atrevida, y el que nada sabe, nada duda."</span>
-  <span class="banda-autor">— Sarmiento</span>
-</div>
+  <!-- COLUMNA 2: ACTIVIDADES -->
+  <a href="timeline.html" class="col col-2">
+    <div class="col-bg"></div>
+    <div class="col-overlay"></div>
+    <span class="col-num">02</span>
+    <div class="col-content">
+      <span class="col-tag">Actividades</span>
+      <h2 class="col-title">Jugá con<br/>la <span class="accent">historia</span></h2>
+      <p class="col-desc">Línea de tiempo, cruce de los Andes y rompecabezas. Aprendé jugando.</p>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+        <a href="timeline.html" class="col-cta" onclick="event.stopPropagation()">Línea de tiempo</a>
+        <a href="logistica.html" class="col-cta" onclick="event.stopPropagation()" style="background:rgba(255,255,255,0.9)">Cruce Andes</a>
+        <a href="puzzle.html" class="col-cta" onclick="event.stopPropagation()" style="background:rgba(255,255,255,0.9)">Puzzle</a>
+      </div>
+    </div>
+  </a>
 
-<!-- S3: Sarmiento → Clases de IA -->
-<section class="split reverse">
-  <div class="split-img">
-    <img src="sarmiento.png" alt="Domingo Faustino Sarmiento" loading="lazy" />
-  </div>
-  <div class="split-body">
-    <span class="split-num">03</span>
-    <span class="split-label">Docencia e IA</span>
-    <h2 class="split-title">Aprendé a usar <span class="accent">la IA</span></h2>
-    <p class="split-text">
-      Nadie nació sabiendo. Una serie de videos cortitos que te explican todo en 1 minuto o menos.
-    </p>
-    <p class="split-text">
-      Herramientas concretas para usar la inteligencia artificial en el aula desde hoy.
-    </p>
-    <a href="clases-ia.html" class="btn btn-solid">¡Empezamos desde cero!</a>
-  </div>
-</section>
+  <!-- COLUMNA 3: DOCENTES -->
+  <a href="clases-ia.html" class="col col-3">
+    <div class="col-bg"></div>
+    <div class="col-overlay"></div>
+    <span class="col-num">03</span>
+    <div class="col-content">
+      <span class="col-tag">Sección docentes y adultos</span>
+      <h2 class="col-title">Aprendé<br/>a usar <span class="accent">la IA</span></h2>
+      <p class="col-desc">Videos cortos para docentes. Empezá desde cero y usá la IA en tu aula.</p>
+      <span class="col-cta">▶ Ver clases</span>
+    </div>
+  </a>
 
-<!-- FOOTER -->
+</main>
+
 <footer>
-  <span class="footer-logo">Próceres</span>
+  <span class="footer-logo">Próceres · Héroes de la Patria</span>
   <div class="footer-links">
-    
     <a href="acerca.html">Facundo Torres</a>
   </div>
   <span>© 2026</span>
 </footer>
 
 <script>
-  document.getElementById('navToggle')
-    .addEventListener('click', () =>
-      document.getElementById('navLinks').classList.toggle('open')
-    );
-
-  // dropdown mobile
-  document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
-    toggle.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        toggle.closest('.nav-dropdown').classList.toggle('open');
-      }
-    });
-  });
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
 </script>
 
 </body>

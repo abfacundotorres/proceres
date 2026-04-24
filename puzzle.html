@@ -41,23 +41,76 @@
     .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 52ch; }
 
     /* ACTIVIDAD */
-    .actividad { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .actividad { max-width: 700px; margin: 0 auto; padding: 3rem 2rem 5rem; }
     .instruccion { background: var(--amarillo); border: 2px solid var(--ink); padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 500; margin-bottom: 2rem; line-height: 1.6; }
+
+    /* SELECTOR DE PUZZLE */
+    .selector-titulo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: 0.06em;
+      color: var(--ink); margin-bottom: 1rem;
+      border-bottom: 2px solid var(--ink); padding-bottom: 0.5rem;
+    }
+
+    .selector-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border: 2px solid var(--ink);
+      margin-bottom: 2.5rem;
+    }
+
+    .selector-btn {
+      padding: 0;
+      border: none;
+      border-right: 2px solid var(--ink);
+      cursor: pointer;
+      background: var(--bg);
+      transition: background 0.15s;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .selector-btn:last-child { border-right: none; }
+    .selector-btn:hover { background: var(--amarillo); }
+    .selector-btn.activo { background: var(--ink); }
+    .selector-btn.activo .selector-label { color: var(--amarillo); }
+
+    .selector-thumb {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      border-bottom: 2px solid var(--ink);
+      filter: grayscale(30%);
+      transition: filter 0.2s;
+    }
+    .selector-btn:hover .selector-thumb,
+    .selector-btn.activo .selector-thumb { filter: grayscale(0%); }
+
+    .selector-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 0.4rem 0.2rem;
+      color: var(--ink);
+      background: inherit;
+    }
+
+    /* PUZZLE AREA */
+    #puzzle-area { display: none; }
 
     /* POOL */
     #pool {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      padding: 1.25rem; background: var(--white);
-      border: 2px solid var(--ink); margin-bottom: 2rem;
-      min-height: 100px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 1rem; background: var(--white);
+      border: 2px solid var(--ink); margin-bottom: 1.5rem;
+      min-height: 90px;
     }
 
     /* TABLERO */
-    .tablero-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-    }
+    .tablero-wrap { display: flex; justify-content: center; margin-bottom: 1.5rem; }
 
     #tablero {
       display: grid;
@@ -66,42 +119,33 @@
       background: var(--ink);
       padding: 3px;
       width: 100%;
-      max-width: 360px;
+      max-width: 390px;
     }
 
     .espacio {
       aspect-ratio: 1;
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.1);
       position: relative;
+      transition: background 0.2s;
     }
-    .espacio.drag-over { background: rgba(74,158,202,0.3); }
+    .espacio.drag-over { background: rgba(74,158,202,0.35); }
     .espacio.ok { outline: 3px solid #2ecc71; outline-offset: -3px; }
 
-    .pieza {
+    .pieza, .pieza-pool {
       width: 100%; height: 100%;
-      cursor: grab;
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/300px-Flag_of_Argentina.svg.png');
+      background-repeat: no-repeat;
       background-size: 300% 300%;
-      transition: transform 0.15s, opacity 0.15s;
-      display: block;
+      cursor: grab;
+      transition: opacity 0.2s, transform 0.15s;
     }
-    .pieza:active { transform: scale(0.95); cursor: grabbing; }
-    .pieza.dragging { opacity: 0.4; }
-
-    /* posiciones de cada pieza en pool (más pequeñas) */
     .pieza-pool {
       width: 80px; height: 80px;
-      cursor: grab;
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/300px-Flag_of_Argentina.svg.png');
-      background-size: 300% 300%;
       border: 2px solid var(--borde);
-      transition: transform 0.15s, opacity 0.15s;
       flex-shrink: 0;
     }
-    .pieza-pool:active { transform: scale(0.95); cursor: grabbing; }
-    .pieza-pool.dragging { opacity: 0.4; }
+    .pieza:active, .pieza-pool:active { transform: scale(0.95); cursor: grabbing; }
+    .pieza.dragging, .pieza-pool.dragging { opacity: 0.35; }
 
-    /* background positions para grid 3x3 */
     [data-pos="0"] { background-position: 0% 0%; }
     [data-pos="1"] { background-position: 50% 0%; }
     [data-pos="2"] { background-position: 100% 0%; }
@@ -112,7 +156,7 @@
     [data-pos="7"] { background-position: 50% 100%; }
     [data-pos="8"] { background-position: 100% 100%; }
 
-    /* RESULTADO */
+    /* VICTORIA */
     #victoria { display: none; margin-top: 1.5rem; padding: 1.5rem; border: 2px solid var(--ink); background: #d4edda; text-align: center; }
     #victoria h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
     #victoria p { font-size: 0.875rem; line-height: 1.7; }
@@ -134,6 +178,10 @@
       .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
       .nav-toggle { display: flex; }
       footer { flex-direction: column; align-items: flex-start; }
+      .selector-grid { grid-template-columns: repeat(3, 1fr); }
+      .selector-btn:nth-child(3) { border-right: none; }
+      .selector-btn:nth-child(4), .selector-btn:nth-child(5) { border-top: 2px solid var(--ink); }
+      .selector-btn:nth-child(5) { border-right: none; }
       .pieza-pool { width: 64px; height: 64px; }
     }
   </style>
@@ -141,7 +189,7 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <a href="index.html" class="nav-logo">Próceres<span> · Héroes de la Patria</span></a>
   <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
   <ul class="nav-links" id="navLinks">
     <li><a href="index.html">Inicio</a></li>
@@ -162,26 +210,50 @@
 <div class="page-header">
   <span class="page-header-tag">Actividad · Belgrano</span>
   <h1>Puzzle<br/><span class="accent">Patrio</span></h1>
-  <p>Belgrano creó la bandera argentina en 1812. Armá el rompecabezas y reconstruí el símbolo nacional.</p>
+  <p>Elegí una imagen y armá el rompecabezas. Cada pieza es un pedacito de historia argentina.</p>
 </div>
 
 <div class="actividad">
   <div class="instruccion">
-    🧩 Arrastrá las piezas desde el área de abajo hacia el tablero. Ubicalas en el lugar correcto para reconstruir la bandera argentina.
+    🧩 Elegí la imagen que querés armar, luego arrastrá las piezas al tablero en el lugar correcto.
   </div>
 
-  <!-- POOL -->
-  <div id="pool"></div>
-
-  <!-- TABLERO -->
-  <div class="tablero-wrap">
-    <div id="tablero"></div>
+  <!-- SELECTOR -->
+  <p class="selector-titulo">Elegí tu puzzle</p>
+  <div class="selector-grid" id="selectorGrid">
+    <button class="selector-btn" data-url="https://i.imgur.com/fa9yqQX.jpeg" data-nombre="Bandera Argentina" data-info="Manuel Belgrano creó la bandera argentina el 27 de febrero de 1812 a orillas del río Paraná.">
+      <img src="https://i.imgur.com/fa9yqQX.jpeg" class="selector-thumb" alt="Bandera" />
+      <span class="selector-label">Bandera</span>
+    </button>
+    <button class="selector-btn" data-url="https://i.imgur.com/HMKuxs0.jpeg" data-nombre="El Cabildo" data-info="El Cabildo de Buenos Aires fue el escenario central de la Revolución de Mayo de 1810.">
+      <img src="https://i.imgur.com/HMKuxs0.jpeg" class="selector-thumb" alt="Cabildo" />
+      <span class="selector-label">Cabildo</span>
+    </button>
+    <button class="selector-btn" data-url="https://i.imgur.com/VJABnYY.jpeg" data-nombre="La Escarapela" data-info="La escarapela argentina fue creada por Manuel Belgrano en 1812 como símbolo de identidad nacional.">
+      <img src="https://i.imgur.com/VJABnYY.jpeg" class="selector-thumb" alt="Escarapela" />
+      <span class="selector-label">Escarapela</span>
+    </button>
+    <button class="selector-btn" data-url="https://i.imgur.com/Kc1O7Pj.jpeg" data-nombre="Granadero a Caballo" data-info="Los Granaderos a Caballo fueron creados por San Martín en 1812. Fueron la unidad militar más destacada de la independencia.">
+      <img src="https://i.imgur.com/Kc1O7Pj.jpeg" class="selector-thumb" alt="Granadero" />
+      <span class="selector-label">Granadero</span>
+    </button>
+    <button class="selector-btn" data-url="https://i.imgur.com/0uvudvT.jpeg" data-nombre="Flor del Patrio" data-info="El ceibo es la flor nacional argentina, símbolo de la identidad y la belleza de nuestra tierra.">
+      <img src="https://i.imgur.com/0uvudvT.jpeg" class="selector-thumb" alt="Flor" />
+      <span class="selector-label">Flor</span>
+    </button>
   </div>
 
-  <div id="victoria">
-    <h3>¡La Patria está completa! 🇦🇷</h3>
-    <p>Reconstruiste la bandera argentina, creada por Manuel Belgrano el 27 de febrero de 1812 a orillas del río Paraná. Sus colores celeste y blanco representan el cielo y las nubes.</p>
-    <button class="btn-reintentar" id="btnReintentar">↺ Jugar de nuevo</button>
+  <!-- PUZZLE -->
+  <div id="puzzle-area">
+    <div id="pool"></div>
+    <div class="tablero-wrap">
+      <div id="tablero"></div>
+    </div>
+    <div id="victoria">
+      <h3 id="vic-titulo">¡Puzzle completado! 🇦🇷</h3>
+      <p id="vic-info"></p>
+      <button class="btn-reintentar" id="btnReintentar">↺ Elegir otro puzzle</button>
+    </div>
   </div>
 </div>
 
@@ -194,126 +266,124 @@
 </footer>
 
 <script>
-  // Crear piezas mezcladas
-  const orden = [4, 0, 7, 2, 5, 1, 8, 3, 6]; // orden mezclado
-  const pool = document.getElementById('pool');
-  const tablero = document.getElementById('tablero');
+  let dragId = null;
+  let currentUrl = null;
 
-  // Crear espacios del tablero
-  for (let i = 0; i < 9; i++) {
-    const esp = document.createElement('div');
-    esp.className = 'espacio';
-    esp.id = `s${i}`;
-    esp.setAttribute('data-slot', i);
-    tablero.appendChild(esp);
+  const ORDEN_MEZCLA = [4, 0, 7, 2, 5, 1, 8, 3, 6];
+
+  // Selector
+  document.querySelectorAll('.selector-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      currentUrl = btn.getAttribute('data-url');
+      const nombre = btn.getAttribute('data-nombre');
+      const info = btn.getAttribute('data-info');
+      iniciarPuzzle(currentUrl, nombre, info);
+    });
+  });
+
+  function iniciarPuzzle(url, nombre, info) {
+    const area = document.getElementById('puzzle-area');
+    const pool = document.getElementById('pool');
+    const tablero = document.getElementById('tablero');
+
+    area.style.display = 'block';
+    pool.innerHTML = '';
+    tablero.innerHTML = '';
+    document.getElementById('victoria').style.display = 'none';
+    document.getElementById('vic-titulo').textContent = `¡${nombre} completada! 🇦🇷`;
+    document.getElementById('vic-info').textContent = info;
+
+    // Crear espacios
+    for (let i = 0; i < 9; i++) {
+      const esp = document.createElement('div');
+      esp.className = 'espacio';
+      esp.id = `s${i}`;
+      esp.setAttribute('data-slot', i);
+      tablero.appendChild(esp);
+    }
+
+    // Crear piezas en pool (mezcladas)
+    ORDEN_MEZCLA.forEach(pos => {
+      const p = document.createElement('div');
+      p.className = 'pieza-pool';
+      p.id = `p${pos}`;
+      p.setAttribute('data-pos', pos);
+      p.setAttribute('draggable', 'true');
+      p.style.backgroundImage = `url('${url}')`;
+      pool.appendChild(p);
+    });
+
+    // Registrar eventos
+    registrarEventos();
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // Crear piezas en el pool (mezcladas)
-  orden.forEach(pos => {
-    const p = document.createElement('div');
-    p.className = 'pieza-pool';
-    p.id = `p${pos}`;
-    p.setAttribute('data-pos', pos);
-    p.setAttribute('draggable', 'true');
-    pool.appendChild(p);
-  });
-
-  let dragId = null;
-  let dragFrom = null; // 'pool' or slot id
-
-  document.addEventListener('dragstart', e => {
-    const el = e.target;
-    if (el.classList.contains('pieza-pool') || el.classList.contains('pieza')) {
-      dragId = el.id;
-      dragFrom = el.parentElement.id;
-      setTimeout(() => el.classList.add('dragging'), 0);
-    }
-  });
-
-  document.addEventListener('dragend', e => {
-    e.target.classList.remove('dragging');
-  });
-
-  // Espacios del tablero
-  document.querySelectorAll('.espacio').forEach(esp => {
-    esp.addEventListener('dragover', e => {
-      e.preventDefault();
-      esp.classList.add('drag-over');
+  function registrarEventos() {
+    document.querySelectorAll('.pieza-pool, .pieza').forEach(el => {
+      el.addEventListener('dragstart', e => {
+        dragId = e.target.id;
+        setTimeout(() => e.target.classList.add('dragging'), 0);
+      });
+      el.addEventListener('dragend', e => e.target.classList.remove('dragging'));
     });
-    esp.addEventListener('dragleave', () => esp.classList.remove('drag-over'));
-    esp.addEventListener('drop', e => {
+
+    document.querySelectorAll('.espacio').forEach(esp => {
+      esp.addEventListener('dragover', e => { e.preventDefault(); esp.classList.add('drag-over'); });
+      esp.addEventListener('dragleave', () => esp.classList.remove('drag-over'));
+      esp.addEventListener('drop', e => {
+        e.preventDefault();
+        esp.classList.remove('drag-over');
+        if (!dragId) return;
+        const pieza = document.getElementById(dragId);
+        const slot = parseInt(esp.getAttribute('data-slot'));
+        const pos = parseInt(pieza.getAttribute('data-pos'));
+
+        // Si el espacio tiene pieza, la devolvemos al pool
+        if (esp.firstChild) {
+          const anterior = esp.firstChild;
+          anterior.className = 'pieza-pool';
+          anterior.setAttribute('draggable', 'true');
+          // Mantener background image
+          document.getElementById('pool').appendChild(anterior);
+          esp.classList.remove('ok');
+        }
+
+        pieza.className = 'pieza';
+        pieza.setAttribute('draggable', 'true');
+        esp.appendChild(pieza);
+        if (pos === slot) esp.classList.add('ok');
+        else esp.classList.remove('ok');
+        checkWin();
+      });
+    });
+
+    const pool = document.getElementById('pool');
+    pool.addEventListener('dragover', e => e.preventDefault());
+    pool.addEventListener('drop', e => {
       e.preventDefault();
-      esp.classList.remove('drag-over');
       if (!dragId) return;
-
       const pieza = document.getElementById(dragId);
-      const slot = parseInt(esp.getAttribute('data-slot'));
-      const pos = parseInt(pieza.getAttribute('data-pos'));
-
-      // Si el espacio ya tiene pieza, la mandamos al pool
-      if (esp.firstChild) {
-        const anterior = esp.firstChild;
-        anterior.className = 'pieza-pool';
-        anterior.setAttribute('draggable', 'true');
-        pool.appendChild(anterior);
-        esp.classList.remove('ok');
+      if (pieza.parentElement.classList.contains('espacio')) {
+        pieza.parentElement.classList.remove('ok');
       }
-
-      // Colocar pieza en tablero
-      pieza.className = 'pieza';
-      pieza.setAttribute('draggable', 'true');
-      esp.appendChild(pieza);
-
-      if (pos === slot) {
-        esp.classList.add('ok');
-      } else {
-        esp.classList.remove('ok');
-      }
+      pieza.className = 'pieza-pool';
+      pool.appendChild(pieza);
       checkWin();
     });
-  });
-
-  // Pool drop
-  pool.addEventListener('dragover', e => e.preventDefault());
-  pool.addEventListener('drop', e => {
-    e.preventDefault();
-    if (!dragId) return;
-    const pieza = document.getElementById(dragId);
-    const parent = pieza.parentElement;
-    if (parent && parent.classList.contains('espacio')) {
-      parent.classList.remove('ok');
-    }
-    pieza.className = 'pieza-pool';
-    pieza.setAttribute('draggable', 'true');
-    pool.appendChild(pieza);
-    checkWin();
-  });
+  }
 
   function checkWin() {
-    const ok = document.querySelectorAll('.espacio.ok').length;
-    if (ok === 9) {
+    if (document.querySelectorAll('.espacio.ok').length === 9) {
       document.getElementById('victoria').style.display = 'block';
       document.getElementById('victoria').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
   document.getElementById('btnReintentar').addEventListener('click', () => {
-    // Return all pieces to pool
-    document.querySelectorAll('.espacio').forEach(esp => {
-      esp.classList.remove('ok');
-      if (esp.firstChild) {
-        const p = esp.firstChild;
-        p.className = 'pieza-pool';
-        p.setAttribute('draggable', 'true');
-        pool.appendChild(p);
-      }
-    });
-    // Reshuffle pool
-    const piezas = Array.from(pool.children);
-    for (let i = piezas.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      pool.appendChild(piezas[j]);
-    }
+    document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('activo'));
+    document.getElementById('puzzle-area').style.display = 'none';
     document.getElementById('victoria').style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
