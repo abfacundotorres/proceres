@@ -72,7 +72,7 @@
     .diccionario {
       display: flex; flex-wrap: wrap; gap: 6px;
       padding: 1rem; background: var(--white);
-      border: 2px solid var(--ink); margin-bottom: 2rem;
+      border: 2px solid var(--ink); margin-bottom: 1rem;
     }
 
     .dic-item {
@@ -81,8 +81,28 @@
       border: 1px solid var(--borde);
       font-size: 0.8rem; font-weight: 500;
       display: flex; align-items: center; gap: 0.4rem;
+      transition: background 0.2s;
     }
     .dic-item .simbolo { font-size: 1.1rem; }
+    .dic-item .letra-revelada { color: var(--celeste); font-weight: 700; }
+    .dic-item.revelado { background: #eafaf1; border-color: #2ecc71; }
+
+    /* PISTAS */
+    .pistas-wrap {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .btn-pista {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.25rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; background: var(--celeste);
+      color: var(--white); border: 2px solid var(--celeste);
+      cursor: pointer; transition: background 0.18s;
+    }
+    .btn-pista:hover { background: #3a8ab8; border-color: #3a8ab8; }
+    .btn-pista:disabled { background: var(--borde); border-color: var(--borde); color: var(--gris); cursor: not-allowed; }
+    .pistas-contador { font-size: 0.78rem; color: var(--gris); font-weight: 500; }
 
     /* FRASE */
     .frase-titulo {
@@ -238,6 +258,10 @@
   <!-- DICCIONARIO -->
   <p class="dic-titulo">Diccionario de la Logia</p>
   <div class="diccionario" id="diccionario"></div>
+  <div class="pistas-wrap">
+    <button class="btn-pista" id="btnPista">💡 Revelar una pista</button>
+    <span class="pistas-contador" id="pistasContador"></span>
+  </div>
 
   <!-- FRASE -->
   <p class="frase-titulo">Mensaje cifrado</p>
@@ -300,25 +324,33 @@
   let fraseActual = null;
   let descubiertas = new Set();
   let indiceActual = 0;
+  let letrasEnFrase = [];
+  let pistasDadas = 0;
 
   function iniciar(indice) {
     fraseActual = FRASES[indice % FRASES.length];
     descubiertas = new Set();
+    pistasDadas = 0;
+    letrasEnFrase = [];
 
     document.getElementById('diccionario').innerHTML = '';
     document.getElementById('frase-display').innerHTML = '';
     document.getElementById('teclado').innerHTML = '';
     document.getElementById('victoria').style.display = 'none';
+    document.getElementById('btnPista').disabled = false;
 
-    // Diccionario — solo letras que aparecen en la frase
-    const letrasEnFrase = new Set(fraseActual.texto.replace(/\s/g, '').split(''));
+    // Letras únicas en la frase
+    const letrasSet = new Set(fraseActual.texto.replace(/\s/g, '').split(''));
+    letrasEnFrase = Array.from(letrasSet).filter(l => SIMBOLOS[l]);
+    actualizarContadorPistas();
+
+    // Diccionario — símbolo + "?" por ahora
     letrasEnFrase.forEach(letra => {
-      if (SIMBOLOS[letra]) {
-        const div = document.createElement('div');
-        div.className = 'dic-item';
-        div.innerHTML = `<span class="simbolo">${SIMBOLOS[letra]}</span><span>= ?</span>`;
-        document.getElementById('diccionario').appendChild(div);
-      }
+      const div = document.createElement('div');
+      div.className = 'dic-item';
+      div.id = `dic-${letra}`;
+      div.innerHTML = `<span class="simbolo">${SIMBOLOS[letra]}</span><span class="letra-revelada" id="rev-${letra}">?</span>`;
+      document.getElementById('diccionario').appendChild(div);
     });
 
     // Frase display
@@ -350,6 +382,30 @@
     });
   }
 
+  function actualizarContadorPistas() {
+    const restantes = letrasEnFrase.length - pistasDadas;
+    const contador = document.getElementById('pistasContador');
+    contador.textContent = `${pistasDadas} pista${pistasDadas !== 1 ? 's' : ''} usada${pistasDadas !== 1 ? 's' : ''} · ${restantes} letra${restantes !== 1 ? 's' : ''} por descubrir`;
+    if (pistasDadas >= letrasEnFrase.length) {
+      document.getElementById('btnPista').disabled = true;
+    }
+  }
+
+  function darPista() {
+    // Encuentra la primera letra no revelada en el diccionario
+    const noReveladas = letrasEnFrase.filter(l => !descubiertas.has(l) && document.getElementById(`rev-${l}`).textContent === '?');
+    if (noReveladas.length === 0) return;
+
+    // Revela una al azar
+    const letra = noReveladas[Math.floor(Math.random() * noReveladas.length)];
+    const revEl = document.getElementById(`rev-${letra}`);
+    const dicItem = document.getElementById(`dic-${letra}`);
+    revEl.textContent = letra;
+    dicItem.classList.add('revelado');
+    pistasDadas++;
+    actualizarContadorPistas();
+  }
+
   function procesarLetra(letra, boton) {
     if (boton.disabled) return;
     boton.disabled = true;
@@ -361,6 +417,12 @@
         el.classList.add('resuelta');
       });
       descubiertas.add(letra);
+      // Marcar en diccionario también
+      const revEl = document.getElementById(`rev-${letra}`);
+      if (revEl) {
+        revEl.textContent = letra;
+        document.getElementById(`dic-${letra}`)?.classList.add('revelado');
+      }
       verificarVictoria();
     } else {
       boton.classList.add('incorrecta');
@@ -377,6 +439,8 @@
       vic.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
+
+  document.getElementById('btnPista').addEventListener('click', darPista);
 
   document.getElementById('btnSiguiente').addEventListener('click', () => {
     indiceActual++;
