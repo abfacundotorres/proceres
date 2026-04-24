@@ -25,11 +25,11 @@
     .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
     .nav-dropdown { position: relative; }
     .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
-    .nav-dropdown-menu { display: none; position: absolute; top: 60px; left: 0; background: var(--bg); border: 2px solid var(--ink); border-top: none; min-width: 220px; z-index: 300; }
-    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 58px; left: 0; background: var(--bg); border: 2px solid var(--ink); min-width: 220px; z-index: 300; padding-top: 4px; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; } .nav-dropdown > a::before { content: ""; position: absolute; bottom: -8px; left: 0; right: 0; height: 8px; }
     .nav-dropdown-menu a { display: block; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; }
     .nav-dropdown-menu a:last-child { border-bottom: none; }
-    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--amarillo); }
+    .nav-dropdown-menu a:hover { background: var(--celeste); color: #ffffff !important; } .nav-dropdown-menu a.active { color: var(--celeste); }
     .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
     .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
 
