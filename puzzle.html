@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puzzle Patrio — Próceres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf7f2; --white: #ffffff; --ink: #1c1510;
+      --celeste: #4a9eca; --amarillo: #f5c842; --gris: #6b6258; --borde: #e0d8cc;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 60px; left: 0; background: var(--bg); border: 2px solid var(--ink); border-top: none; min-width: 220px; z-index: 300; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--amarillo); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* HERO */
+    .page-header { margin-top: 60px; background: var(--ink); padding: 3rem 2.5rem 2.5rem; border-bottom: 4px solid var(--amarillo); }
+    .page-header-tag { display: inline-block; background: var(--amarillo); color: var(--ink); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 0.95; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header h1 .accent { color: var(--amarillo); }
+    .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 52ch; }
+
+    /* ACTIVIDAD */
+    .actividad { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .instruccion { background: var(--amarillo); border: 2px solid var(--ink); padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 500; margin-bottom: 2rem; line-height: 1.6; }
+
+    /* POOL */
+    #pool {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 1.25rem; background: var(--white);
+      border: 2px solid var(--ink); margin-bottom: 2rem;
+      min-height: 100px;
+    }
+
+    /* TABLERO */
+    .tablero-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    #tablero {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      background: var(--ink);
+      padding: 3px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .espacio {
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.12);
+      position: relative;
+    }
+    .espacio.drag-over { background: rgba(74,158,202,0.3); }
+    .espacio.ok { outline: 3px solid #2ecc71; outline-offset: -3px; }
+
+    .pieza {
+      width: 100%; height: 100%;
+      cursor: grab;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/300px-Flag_of_Argentina.svg.png');
+      background-size: 300% 300%;
+      transition: transform 0.15s, opacity 0.15s;
+      display: block;
+    }
+    .pieza:active { transform: scale(0.95); cursor: grabbing; }
+    .pieza.dragging { opacity: 0.4; }
+
+    /* posiciones de cada pieza en pool (más pequeñas) */
+    .pieza-pool {
+      width: 80px; height: 80px;
+      cursor: grab;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/300px-Flag_of_Argentina.svg.png');
+      background-size: 300% 300%;
+      border: 2px solid var(--borde);
+      transition: transform 0.15s, opacity 0.15s;
+      flex-shrink: 0;
+    }
+    .pieza-pool:active { transform: scale(0.95); cursor: grabbing; }
+    .pieza-pool.dragging { opacity: 0.4; }
+
+    /* background positions para grid 3x3 */
+    [data-pos="0"] { background-position: 0% 0%; }
+    [data-pos="1"] { background-position: 50% 0%; }
+    [data-pos="2"] { background-position: 100% 0%; }
+    [data-pos="3"] { background-position: 0% 50%; }
+    [data-pos="4"] { background-position: 50% 50%; }
+    [data-pos="5"] { background-position: 100% 50%; }
+    [data-pos="6"] { background-position: 0% 100%; }
+    [data-pos="7"] { background-position: 50% 100%; }
+    [data-pos="8"] { background-position: 100% 100%; }
+
+    /* RESULTADO */
+    #victoria { display: none; margin-top: 1.5rem; padding: 1.5rem; border: 2px solid var(--ink); background: #d4edda; text-align: center; }
+    #victoria h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    #victoria p { font-size: 0.875rem; line-height: 1.7; }
+
+    .btn-reintentar { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding: 0.75rem 1.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--white); border: 2px solid var(--ink); cursor: pointer; transition: background 0.18s; }
+    .btn-reintentar:hover { background: var(--celeste); border-color: var(--celeste); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(250,247,242,0.45); padding: 1.6rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; letter-spacing: 0.06em; border-top: 2px solid var(--ink); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 2px solid var(--ink); z-index: 199; }
+      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid var(--borde); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-toggle { display: flex; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .pieza-pool { width: 64px; height: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="#">Actividades</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html">¿Qué prócer sos?</a>
+        <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
+        <a href="logistica.html" style="white-space:nowrap;">Cruce de los Andes</a>
+        <a href="puzzle.html" class="active">Puzzle patrio</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-tag">Actividad · Belgrano</span>
+  <h1>Puzzle<br/><span class="accent">Patrio</span></h1>
+  <p>Belgrano creó la bandera argentina en 1812. Armá el rompecabezas y reconstruí el símbolo nacional.</p>
+</div>
+
+<div class="actividad">
+  <div class="instruccion">
+    🧩 Arrastrá las piezas desde el área de abajo hacia el tablero. Ubicalas en el lugar correcto para reconstruir la bandera argentina.
+  </div>
+
+  <!-- POOL -->
+  <div id="pool"></div>
+
+  <!-- TABLERO -->
+  <div class="tablero-wrap">
+    <div id="tablero"></div>
+  </div>
+
+  <div id="victoria">
+    <h3>¡La Patria está completa! 🇦🇷</h3>
+    <p>Reconstruiste la bandera argentina, creada por Manuel Belgrano el 27 de febrero de 1812 a orillas del río Paraná. Sus colores celeste y blanco representan el cielo y las nubes.</p>
+    <button class="btn-reintentar" id="btnReintentar">↺ Jugar de nuevo</button>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  // Crear piezas mezcladas
+  const orden = [4, 0, 7, 2, 5, 1, 8, 3, 6]; // orden mezclado
+  const pool = document.getElementById('pool');
+  const tablero = document.getElementById('tablero');
+
+  // Crear espacios del tablero
+  for (let i = 0; i < 9; i++) {
+    const esp = document.createElement('div');
+    esp.className = 'espacio';
+    esp.id = `s${i}`;
+    esp.setAttribute('data-slot', i);
+    tablero.appendChild(esp);
+  }
+
+  // Crear piezas en el pool (mezcladas)
+  orden.forEach(pos => {
+    const p = document.createElement('div');
+    p.className = 'pieza-pool';
+    p.id = `p${pos}`;
+    p.setAttribute('data-pos', pos);
+    p.setAttribute('draggable', 'true');
+    pool.appendChild(p);
+  });
+
+  let dragId = null;
+  let dragFrom = null; // 'pool' or slot id
+
+  document.addEventListener('dragstart', e => {
+    const el = e.target;
+    if (el.classList.contains('pieza-pool') || el.classList.contains('pieza')) {
+      dragId = el.id;
+      dragFrom = el.parentElement.id;
+      setTimeout(() => el.classList.add('dragging'), 0);
+    }
+  });
+
+  document.addEventListener('dragend', e => {
+    e.target.classList.remove('dragging');
+  });
+
+  // Espacios del tablero
+  document.querySelectorAll('.espacio').forEach(esp => {
+    esp.addEventListener('dragover', e => {
+      e.preventDefault();
+      esp.classList.add('drag-over');
+    });
+    esp.addEventListener('dragleave', () => esp.classList.remove('drag-over'));
+    esp.addEventListener('drop', e => {
+      e.preventDefault();
+      esp.classList.remove('drag-over');
+      if (!dragId) return;
+
+      const pieza = document.getElementById(dragId);
+      const slot = parseInt(esp.getAttribute('data-slot'));
+      const pos = parseInt(pieza.getAttribute('data-pos'));
+
+      // Si el espacio ya tiene pieza, la mandamos al pool
+      if (esp.firstChild) {
+        const anterior = esp.firstChild;
+        anterior.className = 'pieza-pool';
+        anterior.setAttribute('draggable', 'true');
+        pool.appendChild(anterior);
+        esp.classList.remove('ok');
+      }
+
+      // Colocar pieza en tablero
+      pieza.className = 'pieza';
+      pieza.setAttribute('draggable', 'true');
+      esp.appendChild(pieza);
+
+      if (pos === slot) {
+        esp.classList.add('ok');
+      } else {
+        esp.classList.remove('ok');
+      }
+      checkWin();
+    });
+  });
+
+  // Pool drop
+  pool.addEventListener('dragover', e => e.preventDefault());
+  pool.addEventListener('drop', e => {
+    e.preventDefault();
+    if (!dragId) return;
+    const pieza = document.getElementById(dragId);
+    const parent = pieza.parentElement;
+    if (parent && parent.classList.contains('espacio')) {
+      parent.classList.remove('ok');
+    }
+    pieza.className = 'pieza-pool';
+    pieza.setAttribute('draggable', 'true');
+    pool.appendChild(pieza);
+    checkWin();
+  });
+
+  function checkWin() {
+    const ok = document.querySelectorAll('.espacio.ok').length;
+    if (ok === 9) {
+      document.getElementById('victoria').style.display = 'block';
+      document.getElementById('victoria').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  document.getElementById('btnReintentar').addEventListener('click', () => {
+    // Return all pieces to pool
+    document.querySelectorAll('.espacio').forEach(esp => {
+      esp.classList.remove('ok');
+      if (esp.firstChild) {
+        const p = esp.firstChild;
+        p.className = 'pieza-pool';
+        p.setAttribute('draggable', 'true');
+        pool.appendChild(p);
+      }
+    });
+    // Reshuffle pool
+    const piezas = Array.from(pool.children);
+    for (let i = piezas.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      pool.appendChild(piezas[j]);
+    }
+    document.getElementById('victoria').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+</script>
+</body>
+</html>

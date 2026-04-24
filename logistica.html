@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cruce de los Andes — Próceres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf7f2; --white: #ffffff; --ink: #1c1510;
+      --celeste: #4a9eca; --amarillo: #f5c842; --gris: #6b6258; --borde: #e0d8cc;
+      --ok: #2a7a45; --err: #c0392b;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 60px; left: 0; background: var(--bg); border: 2px solid var(--ink); border-top: none; min-width: 220px; z-index: 300; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--amarillo); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* HERO */
+    .page-header { margin-top: 60px; background: var(--ink); padding: 3rem 2.5rem 2.5rem; border-bottom: 4px solid var(--amarillo); }
+    .page-header-tag { display: inline-block; background: var(--amarillo); color: var(--ink); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 0.95; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header h1 .accent { color: var(--celeste); }
+    .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 52ch; }
+
+    /* ACTIVIDAD */
+    .actividad { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    .instruccion { background: var(--amarillo); border: 2px solid var(--ink); padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 500; margin-bottom: 2rem; line-height: 1.6; }
+
+    /* CONTADOR */
+    .contador-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 0.75rem 1.25rem; border: 2px solid var(--ink); background: var(--white); }
+    .contador-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+    .contador-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--celeste); letter-spacing: 0.05em; }
+
+    /* GRID DE OPCIONES */
+    .opciones-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 2px solid var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .opcion {
+      padding: 1.25rem;
+      border-right: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--bg);
+      user-select: none;
+    }
+    .opcion:nth-child(2n) { border-right: none; }
+    .opcion:nth-last-child(-n+2) { border-bottom: none; }
+    .opcion:hover { background: rgba(74,158,202,0.08); }
+    .opcion.seleccionada { background: rgba(74,158,202,0.18); border-color: var(--celeste); }
+    .opcion.seleccionada .opcion-emoji { transform: scale(1.15); }
+
+    .opcion-emoji { font-size: 2rem; flex-shrink: 0; transition: transform 0.2s; }
+    .opcion-texto { font-size: 0.875rem; font-weight: 500; line-height: 1.5; }
+    .opcion-sub { font-size: 0.75rem; font-weight: 300; color: var(--gris); margin-top: 0.2rem; }
+
+    /* BOTÓN */
+    .btn-verificar {
+      width: 100%; padding: 1rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; background: var(--ink); color: var(--white);
+      border: 2px solid var(--ink); cursor: pointer; transition: background 0.18s;
+    }
+    .btn-verificar:disabled { background: var(--borde); border-color: var(--borde); color: var(--gris); cursor: not-allowed; }
+    .btn-verificar:not(:disabled):hover { background: var(--celeste); border-color: var(--celeste); }
+
+    /* FEEDBACK */
+    .feedback-list { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0; border: 2px solid var(--ink); display: none; }
+    .feedback-item { padding: 1rem 1.25rem; border-bottom: 1px solid var(--borde); display: flex; gap: 1rem; align-items: flex-start; font-size: 0.875rem; line-height: 1.6; }
+    .feedback-item:last-child { border-bottom: none; }
+    .feedback-item.ok { background: #eafaf1; }
+    .feedback-item.err { background: #fdf0ef; }
+    .feedback-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    #resultado { display: none; margin-top: 2rem; padding: 1.5rem; border: 2px solid var(--ink); text-align: center; }
+    #resultado.ok { background: #d4edda; }
+    #resultado.err { background: #f8d7da; }
+    #resultado h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    #resultado p { font-size: 0.875rem; line-height: 1.7; }
+
+    .btn-reintentar { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding: 0.75rem 1.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--white); border: 2px solid var(--ink); cursor: pointer; transition: background 0.18s; }
+    .btn-reintentar:hover { background: var(--celeste); border-color: var(--celeste); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(250,247,242,0.45); padding: 1.6rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; letter-spacing: 0.06em; border-top: 2px solid var(--ink); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 2px solid var(--ink); z-index: 199; }
+      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid var(--borde); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-toggle { display: flex; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .opciones-grid { grid-template-columns: 1fr; }
+      .opcion { border-right: none !important; border-bottom: 2px solid var(--ink) !important; }
+      .opcion:last-child { border-bottom: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · La historia te escucha</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="#">Actividades</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html">¿Qué prócer sos?</a>
+        <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
+        <a href="logistica.html" class="active" style="white-space:nowrap;">Cruce de los Andes</a>
+        <a href="puzzle.html">Puzzle patrio</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-tag">Actividad · San Martín</span>
+  <h1>Operación<br/><span class="accent">Cruce de los Andes</span></h1>
+  <p>San Martín debe cruzar la cordillera con su ejército. Elegí exactamente 4 suministros clave para la travesía.</p>
+</div>
+
+<div class="actividad">
+  <div class="instruccion">
+    🏔️ El Ejército de los Andes enfrenta alturas extremas, frío, caminos imposibles y semanas de marcha. Seleccioná los <strong>4 suministros</strong> que realmente llevaron y hacé clic en "Iniciar cruce".
+  </div>
+
+  <div class="contador-wrap">
+    <span class="contador-label">Suministros seleccionados</span>
+    <span class="contador-num"><span id="contNum">0</span> / 4</span>
+  </div>
+
+  <div class="opciones-grid" id="opcionesGrid">
+    <div class="opcion" data-ok="true" data-feedback="¡Correcto! El charqui era carne seca que aportaba proteínas sin echarse a perder durante semanas de marcha.">
+      <span class="opcion-emoji">🥩</span>
+      <div><div class="opcion-texto">Charqui</div><div class="opcion-sub">Carne seca y salada</div></div>
+    </div>
+    <div class="opcion" data-ok="false" data-feedback="Un piano era imposible de transportar en mulas por los pasos andinos. Demasiado pesado e inútil en combate.">
+      <span class="opcion-emoji">🎹</span>
+      <div><div class="opcion-texto">Piano</div><div class="opcion-sub">Instrumento musical</div></div>
+    </div>
+    <div class="opcion" data-ok="true" data-feedback="¡Exacto! Las mulas son expertas en caminos de montaña. El ejército usó miles para transportar provisiones y artillería.">
+      <span class="opcion-emoji">🫏</span>
+      <div><div class="opcion-texto">Mulas</div><div class="opcion-sub">Transporte de carga</div></div>
+    </div>
+    <div class="opcion" data-ok="true" data-feedback="¡Gran elección! El ajo y la cebolla se usaban como remedio para el mal de altura. Era medicina natural disponible para todos.">
+      <span class="opcion-emoji">🧄</span>
+      <div><div class="opcion-texto">Ajo y cebolla</div><div class="opcion-sub">Remedio para el soroche</div></div>
+    </div>
+    <div class="opcion" data-ok="false" data-feedback="Los helados eran un lujo imposible. Sin cadena de frío y con temperaturas extremas, era un suministro absurdo para una campaña militar.">
+      <span class="opcion-emoji">🍦</span>
+      <div><div class="opcion-texto">Helados</div><div class="opcion-sub">Postre refrescante</div></div>
+    </div>
+    <div class="opcion" data-ok="true" data-feedback="¡Clave! En la cumbre andina las temperaturas bajan brutalmente de noche. Los ponchos protegieron a miles de soldados del frío extremo.">
+      <span class="opcion-emoji">🧥</span>
+      <div><div class="opcion-texto">Ponchos</div><div class="opcion-sub">Abrigo de lana gruesa</div></div>
+    </div>
+    <div class="opcion" data-ok="false" data-feedback="Sin refrigeración, el pescado fresco se hubiera podrido en horas. Era un suministro completamente impráctivo para una travesía de semanas.">
+      <span class="opcion-emoji">🐟</span>
+      <div><div class="opcion-texto">Pescado fresco</div><div class="opcion-sub">Alimento perecedero</div></div>
+    </div>
+    <div class="opcion" data-ok="false" data-feedback="Las sombrillas de seda habrían sido un peso inútil. El ejército necesitaba equipamiento funcional, no artículos de lujo.">
+      <span class="opcion-emoji">☂️</span>
+      <div><div class="opcion-texto">Sombrillas de seda</div><div class="opcion-sub">Accesorio de lujo</div></div>
+    </div>
+  </div>
+
+  <button class="btn-verificar" id="btnVerificar" disabled>🏔️ Iniciar cruce de los Andes</button>
+
+  <div class="feedback-list" id="feedbackList"></div>
+
+  <div id="resultado">
+    <h3 id="resTitulo"></h3>
+    <p id="resTexto"></p>
+    <button class="btn-reintentar" id="btnReintentar">↺ Intentar de nuevo</button>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  const opciones = document.querySelectorAll('.opcion');
+  const btnVerificar = document.getElementById('btnVerificar');
+  const contNum = document.getElementById('contNum');
+  let seleccionadas = new Set();
+
+  opciones.forEach(op => {
+    op.addEventListener('click', () => {
+      if (op.classList.contains('seleccionada')) {
+        op.classList.remove('seleccionada');
+        seleccionadas.delete(op);
+      } else if (seleccionadas.size < 4) {
+        op.classList.add('seleccionada');
+        seleccionadas.add(op);
+      }
+      contNum.textContent = seleccionadas.size;
+      btnVerificar.disabled = seleccionadas.size !== 4;
+    });
+  });
+
+  btnVerificar.addEventListener('click', () => {
+    const feedback = document.getElementById('feedbackList');
+    feedback.innerHTML = '';
+    feedback.style.display = 'flex';
+
+    let errores = 0;
+    seleccionadas.forEach(op => {
+      const ok = op.getAttribute('data-ok') === 'true';
+      const texto = op.querySelector('.opcion-texto').textContent;
+      const fb = op.getAttribute('data-feedback');
+      if (!ok) errores++;
+      const div = document.createElement('div');
+      div.className = `feedback-item ${ok ? 'ok' : 'err'}`;
+      div.innerHTML = `<span class="feedback-icon">${ok ? '✅' : '❌'}</span><span><strong>${texto}:</strong> ${fb}</span>`;
+      feedback.appendChild(div);
+    });
+
+    const res = document.getElementById('resultado');
+    res.style.display = 'block';
+    if (errores === 0) {
+      res.className = 'ok';
+      document.getElementById('resTitulo').textContent = '¡Victoria! Chile aguarda. 🇦🇷';
+      document.getElementById('resTexto').textContent = 'Elegiste los 4 suministros correctos. El cruce de los Andes fue una de las hazañas militares más extraordinarias de la historia americana.';
+    } else {
+      res.className = 'err';
+      document.getElementById('resTitulo').textContent = `El cruce falló (${errores} error${errores > 1 ? 'es' : ''})`;
+      document.getElementById('resTexto').textContent = 'Revisá el feedback de cada suministro y volvé a intentarlo.';
+    }
+    res.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  document.getElementById('btnReintentar').addEventListener('click', () => {
+    seleccionadas.clear();
+    opciones.forEach(op => op.classList.remove('seleccionada'));
+    contNum.textContent = '0';
+    btnVerificar.disabled = true;
+    document.getElementById('feedbackList').style.display = 'none';
+    document.getElementById('feedbackList').innerHTML = '';
+    document.getElementById('resultado').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+</script>
+</body>
+</html>
