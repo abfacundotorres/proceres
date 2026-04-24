@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hablando en Códigos — Próceres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf7f2; --white: #ffffff; --ink: #1c1510;
+      --celeste: #4a9eca; --amarillo: #f5c842; --gris: #6b6258; --borde: #e0d8cc;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 60px; left: 0; background: var(--bg); border: 2px solid var(--ink); border-top: none; min-width: 220px; z-index: 300; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--amarillo); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* HERO */
+    .page-header { margin-top: 60px; background: var(--ink); padding: 3rem 2.5rem 2.5rem; border-bottom: 4px solid var(--amarillo); }
+    .page-header-tag { display: inline-block; background: var(--amarillo); color: var(--ink); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 0.95; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header h1 .accent { color: var(--amarillo); }
+    .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 56ch; line-height: 1.7; }
+
+    /* ACTIVIDAD */
+    .actividad { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    .instruccion { background: var(--amarillo); border: 2px solid var(--ink); padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 500; margin-bottom: 2rem; line-height: 1.6; }
+
+    /* CONTEXTO HISTÓRICO */
+    .contexto {
+      border: 2px solid var(--ink);
+      margin-bottom: 2rem;
+    }
+    .contexto-header {
+      background: var(--ink); color: var(--amarillo);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.12em;
+      padding: 0.6rem 1.25rem;
+    }
+    .contexto-body {
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem; font-weight: 300; line-height: 1.75; color: var(--gris);
+    }
+
+    /* DICCIONARIO */
+    .dic-titulo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.08em;
+      color: var(--ink); margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem; border-bottom: 2px solid var(--ink);
+    }
+
+    .diccionario {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 1rem; background: var(--white);
+      border: 2px solid var(--ink); margin-bottom: 2rem;
+    }
+
+    .dic-item {
+      padding: 0.35rem 0.65rem;
+      background: var(--bg);
+      border: 1px solid var(--borde);
+      font-size: 0.8rem; font-weight: 500;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .dic-item .simbolo { font-size: 1.1rem; }
+
+    /* FRASE */
+    .frase-titulo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.08em;
+      color: var(--ink); margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem; border-bottom: 2px solid var(--ink);
+    }
+
+    .frase-display {
+      display: flex; flex-wrap: wrap;
+      gap: 16px 8px; align-items: flex-end;
+      padding: 1.5rem; background: var(--white);
+      border: 2px solid var(--ink); margin-bottom: 2rem;
+      min-height: 90px;
+    }
+
+    .bloque-letra {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+
+    .simbolo-guia { font-size: 1.5rem; line-height: 1; }
+
+    .casilla {
+      width: 28px; height: 32px;
+      border-bottom: 3px solid var(--celeste);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      text-align: center; color: var(--amarillo);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s;
+    }
+    .casilla.resuelta { border-bottom-color: #2ecc71; color: var(--ink); }
+
+    .espacio-entre { width: 20px; }
+
+    /* TECLADO */
+    .teclado-titulo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.08em;
+      color: var(--ink); margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem; border-bottom: 2px solid var(--ink);
+    }
+
+    .teclado {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+      gap: 6px;
+      margin-bottom: 2rem;
+    }
+
+    .tecla {
+      height: 46px; border: 2px solid var(--ink);
+      background: var(--white); color: var(--ink);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+    }
+    .tecla:hover:not(:disabled) { background: var(--amarillo); }
+    .tecla:active:not(:disabled) { transform: translateY(2px); }
+    .tecla.correcta { background: #d4edda; border-color: #2ecc71; color: #155724; }
+    .tecla.incorrecta { background: #f8d7da; border-color: #dc3545; color: #721c24; opacity: 0.55; }
+    .tecla:disabled { cursor: not-allowed; }
+
+    /* VICTORIA */
+    #victoria {
+      display: none;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: var(--white);
+      padding: 2rem;
+      text-align: center;
+      animation: fadeUp 0.5s ease;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    #victoria h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--amarillo); margin-bottom: 0.5rem; }
+    #victoria .frase-resuelta { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--white); letter-spacing: 0.04em; margin: 0.75rem 0 1.5rem; }
+    #victoria p { font-size: 0.875rem; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.7); max-width: 48ch; margin: 0 auto 1.5rem; }
+
+    .btn-siguiente {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; background: var(--amarillo);
+      color: var(--ink); border: 2px solid var(--amarillo);
+      cursor: pointer; transition: background 0.18s;
+    }
+    .btn-siguiente:hover { background: var(--white); border-color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(250,247,242,0.45); padding: 1.6rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; letter-spacing: 0.06em; border-top: 2px solid var(--ink); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.5rem; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 2px solid var(--ink); z-index: 199; }
+      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid var(--borde); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-toggle { display: flex; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .teclado { grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); gap: 5px; }
+      .tecla { height: 40px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · Héroes de la Patria</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="#">Actividades</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html">¿Qué prócer sos?</a>
+        <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
+        <a href="logistica.html" style="white-space:nowrap;">Cruce de los Andes</a>
+        <a href="puzzle.html">Puzzle patrio</a>
+        <a href="codigos.html" class="active">Hablando en códigos</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-tag">Actividad · Logia Lautaro</span>
+  <h1>Hablando<br/>en <span class="accent">Códigos</span></h1>
+  <p>La Logia Lautaro era una sociedad secreta que usó mensajes cifrados para coordinar la Revolución. Usá el diccionario de símbolos para descifrar sus mensajes.</p>
+</div>
+
+<div class="actividad">
+
+  <div class="instruccion">
+    🔐 Cada símbolo representa una letra. Usá el diccionario de abajo como guía y hacé clic en las letras del teclado para descifrar el mensaje.
+  </div>
+
+  <!-- CONTEXTO -->
+  <div class="contexto">
+    <div class="contexto-header">¿Qué era la Logia Lautaro?</div>
+    <div class="contexto-body">
+      La Logia Lautaro fue una sociedad secreta fundada hacia 1812 por San Martín, Alvear y otros patriotas americanos en Buenos Aires. Su objetivo era coordinar en secreto la independencia de América del Sur. Sus miembros usaban rituales, contraseñas y mensajes cifrados para comunicarse sin ser descubiertos por los realistas. El nombre honraba a Lautaro, el guerrero mapuche que derrotó a los conquistadores españoles.
+    </div>
+  </div>
+
+  <!-- DICCIONARIO -->
+  <p class="dic-titulo">Diccionario de la Logia</p>
+  <div class="diccionario" id="diccionario"></div>
+
+  <!-- FRASE -->
+  <p class="frase-titulo">Mensaje cifrado</p>
+  <div class="frase-display" id="frase-display"></div>
+
+  <!-- TECLADO -->
+  <p class="teclado-titulo">Tu teclado</p>
+  <div class="teclado" id="teclado"></div>
+
+  <!-- VICTORIA -->
+  <div id="victoria">
+    <h3>¡Mensaje descifrado!</h3>
+    <div class="frase-resuelta" id="frase-resuelta"></div>
+    <p id="frase-contexto"></p>
+    <button class="btn-siguiente" id="btnSiguiente">▶ Siguiente mensaje</button>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  const FRASES = [
+    {
+      texto: "SEAMOS LIBRES",
+      contexto: "Frase atribuida a San Martín antes del cruce de los Andes: \"Seamos libres, que lo demás no importa nada.\""
+    },
+    {
+      texto: "VIVA LA PATRIA",
+      contexto: "Grito que se escuchó el 25 de Mayo de 1810 en la Plaza Mayor de Buenos Aires cuando se formó el Primer Gobierno Patrio."
+    },
+    {
+      texto: "EL SOL DEL VEINTICINCO",
+      contexto: "El \"Sol de Mayo\" en la bandera y el escudo nacional recuerda al sol que, según la tradición, salió entre las nubes el 25 de Mayo de 1810."
+    },
+    {
+      texto: "LA PATRIA LLAMA",
+      contexto: "Expresión usada por los patriotas para convocar a los ciudadanos a sumarse a la causa de la independencia americana."
+    },
+    {
+      texto: "UNION Y LIBERTAD",
+      contexto: "Lema que guió a los revolucionarios de Mayo: la unión de las provincias y la libertad del yugo colonial eran inseparables."
+    }
+  ];
+
+  const SIMBOLOS = {
+    'A': '⚓', 'B': '🔔', 'C': '🛡️', 'D': '🗡️', 'E': '☀️',
+    'F': '🚩', 'G': '🏔️', 'H': '🕯️', 'I': '📜', 'J': '🔑',
+    'L': '⚖️', 'M': '🐎', 'N': '🦅', 'O': '⚙️', 'P': '🖋️',
+    'R': '🤺', 'S': '🏹', 'T': '🎺', 'U': '🍷', 'V': '🧤',
+    'X': '⚔️', 'Y': '🌿', 'Z': '🌊'
+  };
+
+  let fraseActual = null;
+  let descubiertas = new Set();
+  let indiceActual = 0;
+
+  function iniciar(indice) {
+    fraseActual = FRASES[indice % FRASES.length];
+    descubiertas = new Set();
+
+    document.getElementById('diccionario').innerHTML = '';
+    document.getElementById('frase-display').innerHTML = '';
+    document.getElementById('teclado').innerHTML = '';
+    document.getElementById('victoria').style.display = 'none';
+
+    // Diccionario — solo letras que aparecen en la frase
+    const letrasEnFrase = new Set(fraseActual.texto.replace(/\s/g, '').split(''));
+    letrasEnFrase.forEach(letra => {
+      if (SIMBOLOS[letra]) {
+        const div = document.createElement('div');
+        div.className = 'dic-item';
+        div.innerHTML = `<span class="simbolo">${SIMBOLOS[letra]}</span><span>= ?</span>`;
+        document.getElementById('diccionario').appendChild(div);
+      }
+    });
+
+    // Frase display
+    const display = document.getElementById('frase-display');
+    fraseActual.texto.split('').forEach(letra => {
+      if (letra === ' ') {
+        const esp = document.createElement('div');
+        esp.className = 'espacio-entre';
+        display.appendChild(esp);
+      } else {
+        const bloque = document.createElement('div');
+        bloque.className = 'bloque-letra';
+        bloque.innerHTML = `
+          <span class="simbolo-guia">${SIMBOLOS[letra] || '?'}</span>
+          <div class="casilla" data-letra="${letra}"></div>`;
+        display.appendChild(bloque);
+      }
+    });
+
+    // Teclado
+    const teclado = document.getElementById('teclado');
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
+      const btn = document.createElement('button');
+      btn.className = 'tecla';
+      btn.textContent = l;
+      btn.setAttribute('data-tecla', l);
+      btn.addEventListener('click', () => procesarLetra(l, btn));
+      teclado.appendChild(btn);
+    });
+  }
+
+  function procesarLetra(letra, boton) {
+    if (boton.disabled) return;
+    boton.disabled = true;
+
+    if (fraseActual.texto.includes(letra)) {
+      boton.classList.add('correcta');
+      document.querySelectorAll(`.casilla[data-letra="${letra}"]`).forEach(el => {
+        el.textContent = letra;
+        el.classList.add('resuelta');
+      });
+      descubiertas.add(letra);
+      verificarVictoria();
+    } else {
+      boton.classList.add('incorrecta');
+    }
+  }
+
+  function verificarVictoria() {
+    const letrasUnicas = new Set(fraseActual.texto.replace(/\s/g, '').split(''));
+    if (descubiertas.size === letrasUnicas.size) {
+      const vic = document.getElementById('victoria');
+      document.getElementById('frase-resuelta').textContent = `"${fraseActual.texto}"`;
+      document.getElementById('frase-contexto').textContent = fraseActual.contexto;
+      vic.style.display = 'block';
+      vic.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  document.getElementById('btnSiguiente').addEventListener('click', () => {
+    indiceActual++;
+    iniciar(indiceActual);
+    window.scrollTo({ top: document.querySelector('.frase-titulo').offsetTop - 80, behavior: 'smooth' });
+  });
+
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+
+  // Iniciar con frase aleatoria
+  indiceActual = Math.floor(Math.random() * FRASES.length);
+  iniciar(indiceActual);
+</script>
+</body>
+</html>
