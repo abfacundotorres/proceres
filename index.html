@@ -52,9 +52,9 @@
 
     .fila {
       display: grid;
-      grid-template-columns: 45% 55%;
-      height: 42vh;
-      min-height: 220px;
+      grid-template-columns: 55% 45%;
+      height: 38vh;
+      min-height: 240px;
       border-bottom: 2px solid rgba(255,255,255,0.1);
       text-decoration: none;
       color: var(--white);
@@ -63,7 +63,7 @@
     .fila:last-child { border-bottom: none; }
 
     /* alterna imagen izquierda/derecha */
-    .fila.reverse { grid-template-columns: 55% 45%; }
+    .fila.reverse { grid-template-columns: 45% 55%; }
     .fila.reverse .fila-img { order: 1; }
     .fila.reverse .fila-body { order: 0; border-right: 2px solid rgba(255,255,255,0.1); border-left: none; }
 
@@ -75,14 +75,14 @@
     .fila-img img {
       width: 100%; height: 100%;
       object-fit: cover;
-      object-position: center top;
+      object-position: center 20%;
       display: block;
       transition: transform 0.5s ease, filter 0.3s;
-      filter: brightness(0.75) saturate(0.85);
+      filter: brightness(0.88) saturate(0.9);
     }
     .fila:hover .fila-img img {
-      transform: scale(1.04);
-      filter: brightness(0.9) saturate(1);
+      transform: scale(1.03);
+      filter: brightness(1) saturate(1);
     }
 
     /* borde de color top */
@@ -96,7 +96,7 @@
       flex-direction: column;
       justify-content: center;
       padding: 2rem 2.5rem;
-      background: var(--ink);
+      background: #1a1208;
       border-left: 2px solid rgba(255,255,255,0.1);
       overflow: hidden;
     }
@@ -113,18 +113,18 @@
 
     .fila-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
       line-height: 0.95; letter-spacing: 0.02em;
-      color: var(--white); margin-bottom: 0.5rem;
+      color: var(--white); margin-bottom: 0.6rem;
     }
     .fila-title .accent { color: var(--amarillo); }
     .fila-title .accent-azul { color: var(--celeste); }
 
     .fila-desc {
-      font-size: 0.82rem; font-weight: 300;
-      line-height: 1.65; color: rgba(255,255,255,0.6);
-      margin-bottom: 1rem;
-      max-width: 38ch;
+      font-size: 0.85rem; font-weight: 300;
+      line-height: 1.7; color: rgba(255,255,255,0.65);
+      margin-bottom: 1.1rem;
+      max-width: 36ch;
     }
 
     /* botones */
