@@ -20,7 +20,7 @@
       --borde:    #e0d8cc;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--white); overflow-x: hidden; margin: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #0e0b07; color: var(--white); overflow-x: hidden; margin: 0; }
 
     /* NAV */
     nav {
@@ -48,22 +48,26 @@
     /* FILAS */
     .portada {
       margin-top: 60px;
+      background: #0e0b07;
     }
 
     .fila {
       display: grid;
-      grid-template-columns: 55% 45%;
+      grid-template-columns: 65% 35%;
       height: 100vh;
       min-height: 500px;
-      border-bottom: 2px solid rgba(255,255,255,0.1);
+      border-bottom: 2px solid rgba(255,255,255,0.08);
       text-decoration: none;
       color: var(--white);
       overflow: hidden;
+      position: relative;
     }
     .fila:last-child { border-bottom: none; }
 
     /* alterna imagen izquierda/derecha */
-    .fila.reverse { grid-template-columns: 45% 55%; }
+    .fila.reverse { grid-template-columns: 35% 65%; }
+    .fila.reverse .fila-img { order: 1; }
+    .fila.reverse .fila-body { order: 0; border-right: none; }
     .fila.reverse .fila-img { order: 1; }
     .fila.reverse .fila-body { order: 0; border-right: 2px solid rgba(255,255,255,0.1); border-left: none; }
 
@@ -71,18 +75,36 @@
     .fila-img {
       position: relative;
       overflow: hidden;
+      padding: 1.5rem;
     }
     .fila-img img {
       width: 100%; height: 100%;
       object-fit: cover;
-      object-position: center 20%;
+      object-position: center 15%;
       display: block;
-      transition: transform 0.5s ease, filter 0.3s;
-      filter: brightness(0.88) saturate(0.9);
+      border-radius: 16px;
+      transition: transform 0.6s ease, filter 0.3s, box-shadow 0.3s;
+      filter: brightness(0.92) saturate(0.95);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
     }
     .fila:hover .fila-img img {
-      transform: scale(1.03);
+      transform: scale(1.02);
       filter: brightness(1) saturate(1);
+      box-shadow: 0 12px 60px rgba(0,0,0,0.7);
+    }
+
+    /* vertical accent line */
+    .fila-body::before {
+      content: '';
+      position: absolute;
+      top: 15%; bottom: 15%;
+      left: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--amarillo), transparent);
+      opacity: 0.4;
+    }
+    .fila.reverse .fila-body::before {
+      left: auto; right: 0;
     }
 
     /* borde de color top */
@@ -95,36 +117,40 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 2rem 2.5rem;
-      background: #1a1208;
-      border-left: 2px solid rgba(255,255,255,0.1);
+      padding: 2.5rem 2rem 2.5rem 2rem;
+      background: transparent;
+      border-left: none;
       overflow: hidden;
+      position: relative;
+      z-index: 2;
     }
 
     .fila-tag {
       display: inline-block;
-      font-size: 0.62rem; font-weight: 700;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      padding: 0.25rem 0.65rem; margin-bottom: 0.6rem;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: rgba(255,255,255,0.6);
+      font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.22rem 0.6rem; margin-bottom: 0.75rem;
+      border: 1px solid rgba(245,200,66,0.5);
+      color: var(--amarillo);
+      background: rgba(245,200,66,0.08);
       width: fit-content;
+      border-radius: 2px;
     }
 
     .fila-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-size: clamp(1.6rem, 2.5vw, 2.4rem);
       line-height: 0.95; letter-spacing: 0.02em;
-      color: var(--white); margin-bottom: 0.6rem;
+      color: var(--white); margin-bottom: 0.75rem;
     }
     .fila-title .accent { color: var(--amarillo); }
     .fila-title .accent-azul { color: var(--celeste); }
 
     .fila-desc {
-      font-size: 0.85rem; font-weight: 300;
-      line-height: 1.7; color: rgba(255,255,255,0.65);
-      margin-bottom: 1.1rem;
-      max-width: 36ch;
+      font-size: 0.8rem; font-weight: 300;
+      line-height: 1.7; color: rgba(255,255,255,0.55);
+      margin-bottom: 1.25rem;
+      max-width: 28ch;
     }
 
     /* botones */
