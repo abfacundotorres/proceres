@@ -39,7 +39,7 @@
     .nav-dropdown:hover .nav-dropdown-menu { display: block; }
     .nav-dropdown-menu a { display: block; padding: 0.75rem 1.2rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 1.2; border-bottom: 1px solid var(--borde); transition: background 0.15s, color 0.15s; }
     .nav-dropdown-menu a:last-child { border-bottom: none; }
-    .nav-dropdown-menu a:hover { background: var(--amarillo); color: var(--ink); }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--celeste); color: var(--white); }
     .nav-dropdown-menu a.active { color: var(--celeste); }
     .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
     .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
@@ -230,6 +230,28 @@
       color: var(--gris); max-width: 44ch; margin-bottom: 2rem;
     }
     .result-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .result-datos {
+      list-style: none;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .result-datos li {
+      font-size: 0.78rem;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--gris);
+      padding-left: 1rem;
+      position: relative;
+    }
+    .result-datos li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--celeste);
+      font-weight: 700;
+    }
     .btn-retry {
       font-family: 'DM Sans', sans-serif;
       display: inline-flex; align-items: center; gap: 0.5rem;
@@ -356,9 +378,9 @@
         <p class="result-sos">Sos</p>
         <h2 class="result-nombre" id="resultNombre"></h2>
         <p class="result-desc" id="resultDesc"></p>
+        <ul class="result-datos" id="resultDatos"></ul>
         <div class="result-btns">
           <button class="btn-retry" id="btnRetry">↺ Intentar de nuevo</button>
-          <a class="btn-chat" id="btnChat" href="#" target="_blank" rel="noopener">▶ Chatear con este prócer</a>
         </div>
         <p class="sending-msg" id="sendingMsg"></p>
       </div>
@@ -382,57 +404,57 @@
   const PROCERES = {
     sanmartin: {
       nombre: "José de\nSan Martín",
-      desc: "Estratega, visionario y líder. Tu espíritu cruzaría los Andes sin dudar. Sos quien traza el camino cuando nadie más se anima.",
+      desc: "Estratega, visionario y líder. Sos quien traza el camino cuando nadie más se anima.",
       img: "san_martin_retrato.webp",
-      chat: "https://character.ai/chat/kJ_vyW8EymFylS5c31S2qeNGRsKECfzcx6qRneuacPc"
+      datos: ["Nació en Yapeyú, Corrientes, en 1778.","Creó el Ejército de los Andes con 5.400 soldados en Mendoza.","Cruzó la cordillera de los Andes en enero de 1817.","Venció en la Batalla de Chacabuco (1817) y liberó Chile.","Proclamó la independencia del Perú en Lima en 1821.","Fundó los Granaderos a Caballo en 1812.","Se reunió con Bolívar en Guayaquil en 1822 y cedió el mando.","Vivió sus últimos años en Europa, alejado voluntariamente del poder.","Murió en Boulogne-sur-Mer, Francia, en 1850.","Es llamado el Libertador de Argentina, Chile y Perú."]
     },
     guemes: {
       nombre: "Martín Miguel\nde Güemes",
-      desc: "Guerrero de las fronteras, defensor incansable. Tu fuerza está en el terreno y en la gente. Sos el que protege lo propio a cualquier costo.",
+      desc: "Guerrero de las fronteras. Su fuerza está en el terreno y en la gente.",
       img: "guemes.png",
-      chat: "https://character.ai/chat/S2Ut6E7WVFHYz8bO3kt6IsUdofnBSwSPUahsI3VyH8Q"
+      datos: ["Nació en Salta en 1785, en el seno de una familia criolla.","Defendió el norte argentino de ocho invasiones realistas entre 1814 y 1821.","Creó la guerrilla gaucha, una táctica militar innovadora.","Sus gauchos fueron llamados los 'infernales' por su valentía.","Fue nombrado gobernador de Salta en 1815.","Protegió el flanco norte mientras San Martín cruzaba los Andes.","Fue herido mortalmente en una emboscada realista en 1821.","Murió a los 35 años, sin ver la independencia consolidada.","Representa la resistencia popular y la identidad norteña argentina.","Es el héroe máximo de la provincia de Salta."]
     },
     remedios: {
       nombre: "María Remedios\ndel Valle",
-      desc: "Valiente, compasiva y resiliente. Tu lugar está donde más se necesita, cuidando y sosteniendo a quienes luchan.",
+      desc: "Valiente y compasiva. Su lugar está donde más se necesita.",
       img: "remedios.png",
-      chat: "https://character.ai/chat/KYLZDYOYEJKS16EOtpaLZbMZ6lCVutbfF3EihXYY3fw"
+      datos: ["Nació en Buenos Aires alrededor de 1766, hija de africanos esclavizados.","Combatió en las batallas de Tucumán (1812) y Salta (1813).","Fue herida siete veces en combate y capturada por los realistas.","Fue azotada públicamente como castigo, pero siguió luchando.","El General Belgrano la ascendió a Capitana por su valentía.","Perdió a su marido y sus hijos durante la guerra.","Vivió en la pobreza sus últimos años, ignorada por el Estado.","En 1827 el Congreso le otorgó finalmente una pensión vitalicia.","Murió en Buenos Aires alrededor de 1847.","El 8 de noviembre es el Día Nacional de los Afroargentinos en su honor."]
     },
     belgrano: {
       nombre: "Manuel\nBelgrano",
-      desc: "Diplomático, educador y constructor de nación. Sos quien ve más allá del campo de batalla: las ideas, las leyes, la economía.",
+      desc: "Diplomático y educador. Ve más allá del campo de batalla.",
       img: "belgrano_nuevo.png",
-      chat: "https://character.ai/chat/f8N-bbwf6RcjNvBYf5rCfAUIZcY6xXWTLM_n0gWO73s"
+      datos: ["Nació en Buenos Aires en 1770, de familia acomodada de origen italiano.","Estudió derecho en España y se graduó con honores en Salamanca.","Creó la bandera argentina el 27 de febrero de 1812.","También creó la escarapela nacional como símbolo de identidad.","Venció en las batallas de Tucumán (1812) y Salta (1813).","Donó su sueldo de general para construir cuatro escuelas públicas.","Promovió la educación de la mujer, algo revolucionario para su época.","Participó activamente en la Revolución de Mayo de 1810.","Murió en 1820, en la pobreza, mientras Buenos Aires ardía en guerra civil.","Su último peso lo donó al médico que lo atendió."]
     },
     azurduy: {
       nombre: "Juana\nAzurduy",
-      desc: "Libre, observadora y audaz. Sos quien actúa desde adentro, con astucia y convicción, y escribe el futuro que todavía nadie imagina.",
+      desc: "Libre y audaz. Actúa desde adentro con astucia y convicción.",
       img: "azurduy.png",
-      chat: "https://character.ai/chat/472a9SoIq4697hTOIL6gb0osHjhs-OwLxV1GPVBusjA"
+      datos: ["Nació en Chuquisaca (hoy Bolivia) en 1780, de padre español y madre indígena.","Aprendió quechua y aymara, conectándose con las comunidades originarias.","Luchó junto a su esposo Manuel Padilla en las guerrillas del Alto Perú.","Lideró personalmente tropas en más de 23 combates.","En la Batalla de Pintatora (1816) capturó ella misma una espada realista.","Fue ascendida a Teniente Coronela por el General Belgrano.","Perdió a sus cuatro hijos y a su esposo durante la guerra.","Vivió sus últimos años en la más absoluta pobreza, olvidada por todos.","Murió en 1862 a los 82 años, sin reconocimiento oficial.","En 2009 Argentina y Bolivia la ascendieron póstumamente al grado de General."]
     }
   };
 
   const PREGUNTAS = [
     {
-      texto: "¿Cómo encontraste este portal al pasado?",
+      texto: "Si la Patria te necesitara ahora mismo, ¿qué harías primero?",
       img: "quiz_portal.jpg",
       opciones: [
-        { texto: "Un amigo viajero del tiempo me lo recomendó.", procer: "azurduy" },
-        { texto: "Vi un pergamino digital en redes sociales.", procer: "remedios" },
-        { texto: "Llegué con mi escuela, en una caravana de exploradores.", procer: "belgrano" },
-        { texto: "Lo descubrí por mi cuenta, el destino me trajo aquí.", procer: "guemes" },
-        { texto: "Las autoridades me enviaron una paloma mensajera especial.", procer: "sanmartin" }
+        { texto: "Armaría un plan estratégico y organizaría a todos.", procer: "sanmartin" },
+        { texto: "Saldría a defender el territorio con mis propias manos.", procer: "guemes" },
+        { texto: "Curaría a los heridos y me aseguraría de que nadie quede atrás.", procer: "remedios" },
+        { texto: "Crearía símbolos e instituciones para unir al pueblo.", procer: "belgrano" },
+        { texto: "Lideraría a las comunidades más vulnerables desde adentro.", procer: "azurduy" }
       ]
     },
     {
-      texto: "¿Desde qué tierras has llegado?",
+      texto: "¿Cuál de estas frases te representa mejor?",
       img: "zona_rural.webp",
       opciones: [
-        { texto: "Vengo de este mismo suelo, ¡soy un patriota local!", procer: "belgrano" },
-        { texto: "Llego desde localidades vecinas de esta amada Córdoba.", procer: "sanmartin" },
-        { texto: "He cruzado las provincias del Norte para llegar hasta aquí.", procer: "guemes" },
-        { texto: "Vengo del Sur de esta noble patria a sumar mi sable.", procer: "remedios" },
-        { texto: "Soy un viajero internacional, traigo noticias de otras tierras.", procer: "azurduy" }
+        { texto: "Serás lo que debas ser, o no serás nada.", procer: "sanmartin" },
+        { texto: "Primero la Patria, después los demás y siempre los demás.", procer: "guemes" },
+        { texto: "El que resiste, gana.", procer: "remedios" },
+        { texto: "La educación es la base de todo pueblo libre.", procer: "belgrano" },
+        { texto: "No hay fronteras para quien lucha por los suyos.", procer: "azurduy" }
       ]
     },
     {
@@ -578,7 +600,13 @@
     document.getElementById('resultImg').alt = p.nombre;
     document.getElementById('resultNombre').innerHTML = p.nombre.replace('\n','<br/>');
     document.getElementById('resultDesc').textContent = p.desc;
-    document.getElementById('btnChat').href = p.chat;
+    const datosList = document.getElementById('resultDatos');
+    datosList.innerHTML = '';
+    p.datos.forEach(dato => {
+      const li = document.createElement('li');
+      li.textContent = dato;
+      datosList.appendChild(li);
+    });
     window.scrollTo(0,0);
     sendToSheets(winner, selectedTexts);
   }
