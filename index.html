@@ -183,17 +183,32 @@
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; }
+      .nav-logo { font-size: 1.1rem; }
       .nav-links { display: none; }
       .nav-links.open {
         display: flex; flex-direction: column;
         position: fixed; top: 60px; left: 0; right: 0;
-        background: rgba(28,21,16,0.97);
+        background: rgba(28,21,16,0.98);
         border-bottom: 1px solid rgba(245,200,66,0.2);
         z-index: 199;
       }
-      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
-      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(255,255,255,0.05); min-width: auto; }
-      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-links.open li a {
+        line-height: 1; padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.85);
+        font-size: 0.9rem;
+      }
+      .nav-links.open .nav-dropdown-menu {
+        display: block; position: static; border: none;
+        background: rgba(255,255,255,0.05); min-width: auto;
+        padding-top: 0;
+      }
+      .nav-links.open .nav-dropdown-menu a {
+        padding: 0.85rem 1.5rem 0.85rem 2.5rem;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.7);
+      }
       .nav-toggle { display: flex; }
 
       .fila, .fila.reverse {
@@ -201,10 +216,26 @@
         height: auto;
         min-height: unset;
       }
-      .fila-img { height: 38vw; min-height: 160px; order: 0 !important; }
-      .fila-body { order: 1 !important; padding: 1.5rem; border-left: none !important; border-right: none !important; border-top: 1px solid rgba(255,255,255,0.1); }
-      .fila-desc { max-width: 100%; }
-      footer { flex-direction: column; align-items: flex-start; }
+      .fila-img {
+        height: 75vw;
+        min-height: 280px;
+        order: 0 !important;
+        padding: 1rem;
+      }
+      .fila-body {
+        order: 1 !important;
+        padding: 1.75rem 1.25rem;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }
+      .fila-body::before { display: none; }
+      .fila-tag { font-size: 0.7rem; padding: 0.3rem 0.75rem; }
+      .fila-title { font-size: 2rem; margin-bottom: 0.75rem; }
+      .fila-desc { font-size: 0.92rem; max-width: 100%; margin-bottom: 1.25rem; }
+      .btn-fila { font-size: 0.78rem; padding: 0.65rem 1.25rem; }
+
+      footer { flex-direction: column; align-items: flex-start; padding: 1.25rem; }
     }
   </style>
 </head>
