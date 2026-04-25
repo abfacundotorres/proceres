@@ -121,17 +121,43 @@
     footer a { color: var(--amarillo); text-decoration: none; }
     .footer-links { display: flex; gap: 1.5rem; }
 
+    /* ── MOBILE ── */
     @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; height: 56px; }
+      .nav-logo { font-size: 1rem; }
+      .nav-logo span { display: none; }
       .nav-links { display: none; }
-      .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 2px solid var(--ink); z-index: 199; }
-      .nav-links.open li a { line-height: 1; padding: 1rem 2.5rem; border-bottom: 1px solid var(--borde); }
-      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; }
-      .nav-links.open .nav-dropdown-menu a { padding: 0.6rem 2.5rem 0.6rem 3.5rem; font-size: 0.68rem; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 56px; left: 0; right: 0;
+        background: rgba(250,247,242,0.98);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
+      }
+      .nav-links.open li a {
+        line-height: 1; padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--borde);
+        font-size: 1rem; letter-spacing: 0.06em;
+      }
+      .nav-links.open .nav-dropdown-menu {
+        display: block; position: static; border: none;
+        background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0;
+      }
+      .nav-links.open .nav-dropdown-menu a {
+        padding: 0.85rem 1.5rem 0.85rem 2.75rem;
+        font-size: 0.88rem; color: var(--gris);
+      }
       .nav-toggle { display: flex; }
-      footer { flex-direction: column; align-items: flex-start; }
+    }
+      .actividad { padding: 2rem 1rem 4rem; }
+      .contexto-body { font-size: 0.88rem; }
       .opciones-grid { grid-template-columns: 1fr; }
       .opcion { border-right: none !important; border-bottom: 2px solid var(--ink) !important; }
       .opcion:last-child { border-bottom: none !important; }
+      .opcion-emoji { font-size: 1.6rem; }
+      .opcion-texto { font-size: 0.95rem; }
+      .feedback-item { font-size: 0.88rem; }
+      footer { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>

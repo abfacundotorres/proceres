@@ -475,6 +475,49 @@
     .nav-sub li a:hover { color: var(--celeste); background: var(--parchment, #f5f0e8); }
     .nav-dropdown:hover .nav-sub,
     .nav-dropdown.open .nav-sub { display: block; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; height: 56px; }
+      .nav-logo { font-size: 1rem; }
+      .nav-logo span { display: none; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 56px; left: 0; right: 0;
+        background: rgba(250,247,242,0.98);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
+      }
+      .nav-links.open li a {
+        line-height: 1; padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--borde);
+        font-size: 1rem; letter-spacing: 0.06em;
+      }
+      .nav-links.open .nav-dropdown-menu {
+        display: block; position: static; border: none;
+        background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0;
+      }
+      .nav-links.open .nav-dropdown-menu a {
+        padding: 0.85rem 1.5rem 0.85rem 2.75rem;
+        font-size: 0.88rem; color: var(--gris);
+      }
+      .nav-toggle { display: flex; }
+    }
+      .hero { grid-template-columns: 1fr; }
+      .hero-img { height: 50vw; min-height: 200px; }
+      .hero-body { padding: 1.5rem; border-left: none; border-top: 2px solid var(--ink); }
+      .hero-title { font-size: 2rem; }
+      .hero-text { font-size: 0.95rem; }
+      .video-grid, .video-grid-2 { grid-template-columns: 1fr; }
+      .video-card { border-right: none !important; border-bottom: 2px solid var(--ink) !important; }
+      .video-card:last-child { border-bottom: none !important; }
+      .video-thumb { aspect-ratio: 16/9; }
+      .video-pregunta { font-size: 1rem; }
+      .encuesta { flex-direction: column; padding: 1.5rem; }
+      .encuesta-texto h3 { font-size: 1.4rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
