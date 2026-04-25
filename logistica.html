@@ -17,7 +17,7 @@
     html { scroll-behavior: smooth; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
 
-    /* NAV */
+/* ── NAV UNIVERSAL ── */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
     .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
     .nav-logo span { color: var(--celeste); }
@@ -26,11 +26,12 @@
     .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
     .nav-dropdown { position: relative; }
     .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
-    .nav-dropdown-menu { display: none; position: absolute; top: 58px; left: 0; background: var(--bg); border: 2px solid var(--ink); min-width: 220px; z-index: 300; padding-top: 4px; }
-    .nav-dropdown:hover .nav-dropdown-menu { display: block; } .nav-dropdown > a::before { content: ""; position: absolute; bottom: -8px; left: 0; right: 0; height: 8px; }
-    .nav-dropdown-menu a { display: block; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; }
+    .nav-dropdown > a::before { content: ""; position: absolute; bottom: -8px; left: 0; right: 0; height: 8px; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 58px; left: 0; background: var(--bg); border: 2px solid var(--ink); min-width: 220px; z-index: 300; padding-top: 4px; max-height: 70vh; overflow-y: auto; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.7rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; white-space: nowrap; }
     .nav-dropdown-menu a:last-child { border-bottom: none; }
-    .nav-dropdown-menu a:hover { background: var(--celeste); color: #ffffff !important; } .nav-dropdown-menu a.active { color: var(--celeste); }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--celeste); color: #ffffff; }
     .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
     .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
 
@@ -132,7 +133,6 @@
     .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
     footer a { color: var(--amarillo); text-decoration: none; }
     .footer-links { display: flex; gap: 1.5rem; }
-
     /* ── MOBILE ── */
     @media (max-width: 768px) {
       nav { padding: 0 1.25rem; height: 56px; }
@@ -142,23 +142,14 @@
       .nav-links.open {
         display: flex; flex-direction: column;
         position: fixed; top: 56px; left: 0; right: 0;
-        background: rgba(250,247,242,0.98);
+        background: rgba(250,247,242,0.99);
         border-bottom: 2px solid var(--ink);
         z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
       }
-      .nav-links.open li a {
-        line-height: 1; padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--borde);
-        font-size: 1rem; letter-spacing: 0.06em;
-      }
-      .nav-links.open .nav-dropdown-menu {
-        display: block; position: static; border: none;
-        background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0;
-      }
-      .nav-links.open .nav-dropdown-menu a {
-        padding: 0.85rem 1.5rem 0.85rem 2.75rem;
-        font-size: 0.88rem; color: var(--gris);
-      }
+      .nav-links.open li a { line-height: 1; padding: 1rem 1.5rem; border-bottom: 1px solid var(--borde); font-size: 0.95rem; color: var(--ink); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0; max-height: none; overflow-y: visible; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.8rem 1.5rem 0.8rem 2.5rem; font-size: 0.85rem; color: var(--gris); white-space: normal; }
+      .nav-links.open .nav-dropdown-menu a:hover { background: var(--celeste); color: #fff; }
       .nav-toggle { display: flex; }
     }
       .actividad { padding: 2rem 1rem 4rem; }
@@ -175,6 +166,42 @@
       .feedback-item { font-size: 0.88rem; }
       footer { flex-direction: column; align-items: flex-start; }
     }
+
+    /* ── SECCIÓN PEDAGÓGICA ── */
+    .pedagogia {
+      margin-top: 3rem;
+      border: 2px solid var(--ink);
+    }
+    .pedagogia-header {
+      background: var(--ink); color: var(--amarillo);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.65rem 1.25rem;
+      display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+      user-select: none;
+    }
+    .pedagogia-header::after { content: '▾'; margin-left: auto; font-size: 0.75rem; transition: transform 0.25s; }
+    .pedagogia-header.open::after { transform: rotate(180deg); }
+    .pedagogia-body { display: none; padding: 1.5rem; background: var(--white); }
+    .pedagogia-body.open { display: block; }
+    .ped-seccion { margin-bottom: 1.5rem; }
+    .ped-seccion:last-child { margin-bottom: 0; }
+    .ped-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--ink); margin-bottom: 0.6rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--borde); }
+    .ped-ciclos { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--borde); margin-bottom: 0; }
+    .ped-ciclo { padding: 0.75rem 1rem; border-right: 1px solid var(--borde); }
+    .ped-ciclo:last-child { border-right: none; }
+    .ped-ciclo-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--celeste); margin-bottom: 0.35rem; }
+    .ped-ciclo-texto { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); }
+    .ped-lista { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ped-lista li { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); padding-left: 1rem; position: relative; }
+    .ped-lista li::before { content: '·'; position: absolute; left: 0; color: var(--amarillo); font-weight: 700; font-size: 1rem; }
+    .ped-expandir { background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.4); padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--ink); }
+    .ped-expandir strong { font-weight: 700; color: var(--ink); }
+    @media (max-width: 768px) {
+      .ped-ciclos { grid-template-columns: 1fr; }
+      .ped-ciclo { border-right: none; border-bottom: 1px solid var(--borde); }
+      .ped-ciclo:last-child { border-bottom: none; }
+    }
   </style>
 </head>
 <body>
@@ -187,11 +214,14 @@
     <li class="nav-dropdown active">
       <a href="#">Actividades</a>
       <div class="nav-dropdown-menu">
-        <a href="quiz.html">¿Qué prócer sos?</a>
+        <a href="quiz.html" style="white-space:nowrap;">¿Qué prócer sos?</a>
         <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
         <a href="logistica.html" class="active" style="white-space:nowrap;">Cruce de los Andes</a>
-        <a href="puzzle.html">Puzzle patrio</a>
+        <a href="puzzle.html" style="white-space:nowrap;">Puzzle patrio</a>
         <a href="codigos.html" style="white-space:nowrap;">Hablando en códigos</a>
+        <a href="museo.html" style="white-space:nowrap;">Museo de objetos</a>
+        <a href="mito.html" style="white-space:nowrap;">¿Mito o Realidad?</a>
+        <a href="detective.html" style="white-space:nowrap;">Detective del Tiempo</a>
       </div>
     </li>
     <li><a href="clases-ia.html">Clases de IA</a></li>
@@ -236,6 +266,30 @@
     <button class="btn-reintentar" id="btnReintentar">↺ Intentar de nuevo</button>
   </div>
 </div>
+
+<div class="pedagogia">
+    <div class="pedagogia-header">🎓 Utilidad pedagógica</div>
+    <div class="pedagogia-body">
+      <div class="ped-seccion">
+        <div class="ped-titulo">Utilidad por ciclo</div>
+        <div class="ped-ciclos">
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Primer Ciclo</div><div class="ped-ciclo-texto">Reconocimiento de los esfuerzos necesarios para lograr la libertad, valorando la figura de San Martín como líder.</div></div>
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Segundo Ciclo</div><div class="ped-ciclo-texto">Análisis de la relación entre Sociedad y Naturaleza: cómo el relieve y el clima condicionaron la estrategia militar.</div></div>
+        </div>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Comentarios de clase</div>
+        <ul class="ped-lista">
+          <li><strong>Humor:</strong> La posibilidad de elegir objetos absurdos invita a razonar sobre la supervivencia mediante la risa.</li>
+          <li><strong>Contextualización:</strong> Muestra la precariedad y el ingenio de la época, humanizando la gesta libertadora.</li>
+        </ul>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Cómo expandir en el aula</div>
+        <div class="ped-expandir"><strong>Feria de Ciencias:</strong> Analizar cómo se conservaban los alimentos (el charqui) sin heladeras durante semanas en la montaña.</div>
+      </div>
+    </div>
+  </div>
 
 <footer>
   <span class="footer-logo">Próceres</span>
@@ -399,6 +453,14 @@
 
   crearSelectorMisiones();
   cargarMision(0);
+
+  // Pedagogy accordion
+  document.querySelectorAll('.pedagogia-header').forEach(h => {
+    h.addEventListener('click', () => {
+      h.classList.toggle('open');
+      h.nextElementSibling.classList.toggle('open');
+    });
+  });
 </script>
 </body>
 </html>

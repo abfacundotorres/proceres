@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Museo de Objetos — Próceres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf7f2; --white: #ffffff; --ink: #1c1510;
+      --celeste: #4a9eca; --amarillo: #f5c842; --gris: #6b6258; --borde: #e0d8cc;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+/* ── NAV UNIVERSAL ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown > a::before { content: ""; position: absolute; bottom: -8px; left: 0; right: 0; height: 8px; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 58px; left: 0; background: var(--bg); border: 2px solid var(--ink); min-width: 220px; z-index: 300; padding-top: 4px; max-height: 70vh; overflow-y: auto; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.7rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; white-space: nowrap; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--celeste); color: #ffffff; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* HERO */
+    .page-header { margin-top: 60px; background: var(--ink); padding: 3rem 2.5rem 2.5rem; border-bottom: 4px solid var(--amarillo); }
+    .page-header-tag { display: inline-block; background: var(--amarillo); color: var(--ink); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 0.95; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header h1 .accent { color: var(--amarillo); }
+    .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 52ch; }
+
+    /* ACTIVIDAD */
+    .actividad { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    /* CONTEXTO */
+    .contexto { border: 2px solid var(--ink); margin-bottom: 2rem; }
+    .contexto-header { background: var(--ink); color: var(--amarillo); font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.12em; padding: 0.6rem 1.25rem; }
+    .contexto-body { padding: 1rem 1.25rem; font-size: 0.82rem; font-weight: 300; line-height: 1.75; color: var(--gris); }
+    .contexto-body strong { color: var(--ink); font-weight: 600; }
+
+    .instruccion { background: var(--amarillo); border: 2px solid var(--ink); padding: 1rem 1.5rem; font-size: 0.875rem; font-weight: 500; margin-bottom: 2.5rem; line-height: 1.6; }
+
+    /* POOL DE OBJETOS */
+    .pool-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--ink); margin-bottom: 0.75rem; }
+
+    #pool {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      padding: 1.25rem; background: var(--white);
+      border: 2px solid var(--ink); margin-bottom: 2.5rem;
+      min-height: 80px;
+    }
+
+    .objeto {
+      width: 88px; height: 88px;
+      background: var(--bg);
+      border: 2px solid var(--ink);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.3rem; cursor: grab;
+      transition: transform 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .objeto:hover { background: rgba(74,158,202,0.1); transform: translateY(-2px); }
+    .objeto:active { cursor: grabbing; transform: scale(0.96); }
+    .objeto.dragging { opacity: 0.4; }
+    .objeto-emoji { font-size: 2rem; line-height: 1; }
+    .objeto-label { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); text-align: center; padding: 0 4px; }
+
+    /* GRILLA DE PRÓCERES */
+    .proceres-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border: 2px solid var(--ink);
+      margin-bottom: 2rem;
+    }
+
+    .procer-card {
+      border-right: 2px solid var(--ink);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+    .procer-card:last-child { border-right: none; }
+    .procer-card.acierto { background: #eafaf1; }
+    .procer-card.error-anim { animation: sacudida 0.4s; }
+
+    @keyframes sacudida {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .procer-img-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      border-bottom: 2px solid var(--ink);
+    }
+    .procer-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      filter: grayscale(20%);
+      transition: filter 0.3s;
+    }
+    .procer-card.acierto .procer-img-wrap img { filter: grayscale(0%); }
+
+    .procer-nombre {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.78rem; letter-spacing: 0.06em;
+      text-align: center; padding: 0.5rem 0.25rem;
+      background: var(--ink); color: var(--white);
+      line-height: 1.1;
+    }
+    .procer-card.acierto .procer-nombre { background: var(--celeste); }
+
+    .drop-zone {
+      min-height: 64px; padding: 0.5rem;
+      border-top: 2px dashed var(--borde);
+      display: flex; align-items: center;
+      justify-content: center; flex-wrap: wrap;
+      gap: 4px; transition: background 0.2s, border-color 0.2s;
+      background: var(--white);
+    }
+    .drop-zone.drag-over { background: rgba(74,158,202,0.12); border-color: var(--celeste); }
+    .drop-zone .objeto { width: 52px; height: 52px; cursor: default; }
+    .drop-zone .objeto .objeto-label { display: none; }
+    .drop-zone .objeto .objeto-emoji { font-size: 1.5rem; }
+
+    /* VICTORIA */
+    #victoria {
+      display: none; padding: 2rem; border: 2px solid var(--ink);
+      background: var(--ink); text-align: center;
+      animation: fadeUp 0.5s ease;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    #victoria h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--amarillo); margin-bottom: 0.5rem; }
+    #victoria p { font-size: 0.875rem; color: rgba(255,255,255,0.7); line-height: 1.7; max-width: 44ch; margin: 0 auto 1.5rem; }
+    .btn-reintentar { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: var(--amarillo); color: var(--ink); border: 2px solid var(--amarillo); cursor: pointer; transition: background 0.18s; }
+    .btn-reintentar:hover { background: var(--white); border-color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(250,247,242,0.45); padding: 1.6rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; letter-spacing: 0.06em; border-top: 2px solid var(--ink); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; height: 56px; }
+      .nav-logo { font-size: 1rem; }
+      .nav-logo span { display: none; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 56px; left: 0; right: 0;
+        background: rgba(250,247,242,0.99);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
+      }
+      .nav-links.open li a { line-height: 1; padding: 1rem 1.5rem; border-bottom: 1px solid var(--borde); font-size: 0.95rem; color: var(--ink); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0; max-height: none; overflow-y: visible; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.8rem 1.5rem 0.8rem 2.5rem; font-size: 0.85rem; color: var(--gris); white-space: normal; }
+      .nav-links.open .nav-dropdown-menu a:hover { background: var(--celeste); color: #fff; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ── SECCIÓN PEDAGÓGICA ── */
+    .pedagogia {
+      margin-top: 3rem;
+      border: 2px solid var(--ink);
+    }
+    .pedagogia-header {
+      background: var(--ink); color: var(--amarillo);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.65rem 1.25rem;
+      display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+      user-select: none;
+    }
+    .pedagogia-header::after { content: '▾'; margin-left: auto; font-size: 0.75rem; transition: transform 0.25s; }
+    .pedagogia-header.open::after { transform: rotate(180deg); }
+    .pedagogia-body { display: none; padding: 1.5rem; background: var(--white); }
+    .pedagogia-body.open { display: block; }
+    .ped-seccion { margin-bottom: 1.5rem; }
+    .ped-seccion:last-child { margin-bottom: 0; }
+    .ped-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--ink); margin-bottom: 0.6rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--borde); }
+    .ped-ciclos { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--borde); margin-bottom: 0; }
+    .ped-ciclo { padding: 0.75rem 1rem; border-right: 1px solid var(--borde); }
+    .ped-ciclo:last-child { border-right: none; }
+    .ped-ciclo-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--celeste); margin-bottom: 0.35rem; }
+    .ped-ciclo-texto { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); }
+    .ped-lista { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ped-lista li { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); padding-left: 1rem; position: relative; }
+    .ped-lista li::before { content: '·'; position: absolute; left: 0; color: var(--amarillo); font-weight: 700; font-size: 1rem; }
+    .ped-expandir { background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.4); padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--ink); }
+    .ped-expandir strong { font-weight: 700; color: var(--ink); }
+    @media (max-width: 768px) {
+      .ped-ciclos { grid-template-columns: 1fr; }
+      .ped-ciclo { border-right: none; border-bottom: 1px solid var(--borde); }
+      .ped-ciclo:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · Héroes de la Patria</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="#">Actividades</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html" style="white-space:nowrap;">¿Qué prócer sos?</a>
+        <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
+        <a href="logistica.html" style="white-space:nowrap;">Cruce de los Andes</a>
+        <a href="puzzle.html" style="white-space:nowrap;">Puzzle patrio</a>
+        <a href="codigos.html" style="white-space:nowrap;">Hablando en códigos</a>
+        <a href="museo.html" class="active" style="white-space:nowrap;">Museo de objetos</a>
+        <a href="mito.html" style="white-space:nowrap;">¿Mito o Realidad?</a>
+        <a href="detective.html" style="white-space:nowrap;">Detective del Tiempo</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-tag">Actividad · Identidad histórica</span>
+  <h1>Museo de<br/><span class="accent">Objetos</span></h1>
+  <p>Cada héroe tiene un objeto que lo representa. ¿Sabés cuál le pertenece a cada uno?</p>
+</div>
+
+<div class="actividad">
+
+  <div class="contexto">
+    <div class="contexto-header">Los objetos de la historia</div>
+    <div class="contexto-body">
+      Los próceres argentinos son recordados no solo por sus batallas, sino también por los objetos y símbolos que los representan. El <strong>sable corvo</strong> de San Martín, la <strong>bandera</strong> creada por Belgrano, la <strong>pluma</strong> con la que Sarmiento promovió la educación, el <strong>poncho gaucho</strong> de Güemes y la <strong>espada</strong> capturada por Azurduy son parte del patrimonio histórico argentino.
+    </div>
+  </div>
+
+  <div class="instruccion">
+    🏛️ Arrastrá cada objeto al prócer que le corresponde. Si te equivocás, la tarjeta se sacude. ¡Podés seguir intentando!
+  </div>
+
+  <p class="pool-titulo">Objetos históricos</p>
+  <div id="pool">
+    <div class="objeto" id="sable" draggable="true">
+      <span class="objeto-emoji">⚔️</span>
+      <span class="objeto-label">Sable corvo</span>
+    </div>
+    <div class="objeto" id="bandera" draggable="true">
+      <span class="objeto-emoji">🇦🇷</span>
+      <span class="objeto-label">Bandera</span>
+    </div>
+    <div class="objeto" id="pluma" draggable="true">
+      <span class="objeto-emoji">🖋️</span>
+      <span class="objeto-label">Pluma</span>
+    </div>
+    <div class="objeto" id="poncho" draggable="true">
+      <span class="objeto-emoji">🧥</span>
+      <span class="objeto-label">Poncho gaucho</span>
+    </div>
+    <div class="objeto" id="espada" draggable="true">
+      <span class="objeto-emoji">🗡️</span>
+      <span class="objeto-label">Espada capturada</span>
+    </div>
+  </div>
+
+  <div class="proceres-grid">
+
+    <div class="procer-card" id="card-sanmartin">
+      <div class="procer-img-wrap">
+        <img src="san_martin_retrato.webp" alt="San Martín" />
+      </div>
+      <div class="procer-nombre">José de<br/>San Martín</div>
+      <div class="drop-zone" data-match="sable" id="drop-sanmartin"></div>
+    </div>
+
+    <div class="procer-card" id="card-belgrano">
+      <div class="procer-img-wrap">
+        <img src="belgrano_nuevo.png" alt="Belgrano" />
+      </div>
+      <div class="procer-nombre">Manuel<br/>Belgrano</div>
+      <div class="drop-zone" data-match="bandera" id="drop-belgrano"></div>
+    </div>
+
+    <div class="procer-card" id="card-sarmiento">
+      <div class="procer-img-wrap">
+        <img src="sarmiento.png" alt="Sarmiento" />
+      </div>
+      <div class="procer-nombre">D. F.<br/>Sarmiento</div>
+      <div class="drop-zone" data-match="pluma" id="drop-sarmiento"></div>
+    </div>
+
+    <div class="procer-card" id="card-guemes">
+      <div class="procer-img-wrap">
+        <img src="guemes.png" alt="Güemes" />
+      </div>
+      <div class="procer-nombre">Martín M.<br/>de Güemes</div>
+      <div class="drop-zone" data-match="poncho" id="drop-guemes"></div>
+    </div>
+
+    <div class="procer-card" id="card-azurduy">
+      <div class="procer-img-wrap">
+        <img src="azurduy.png" alt="Azurduy" />
+      </div>
+      <div class="procer-nombre">Juana<br/>Azurduy</div>
+      <div class="drop-zone" data-match="espada" id="drop-azurduy"></div>
+    </div>
+
+  </div>
+
+  <div id="victoria">
+    <h3>¡Museo organizado! 🏛️</h3>
+    <p>Devolviste cada objeto a su dueño. Conocés bien a los héroes de la patria argentina.</p>
+    <button class="btn-reintentar" id="btnReintentar">↺ Jugar de nuevo</button>
+  </div>
+
+</div>
+
+<div class="pedagogia">
+    <div class="pedagogia-header">🎓 Utilidad pedagógica</div>
+    <div class="pedagogia-body">
+      <div class="ped-seccion">
+        <div class="ped-titulo">Utilidad por ciclo</div>
+        <div class="ped-ciclos">
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Primer Ciclo</div><div class="ped-ciclo-texto">Identificación de las funciones de los objetos cotidianos y su evolución (del tintero a la computadora).</div></div>
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Segundo Ciclo</div><div class="ped-ciclo-texto">Análisis de la Cultura Material como fuente histórica para reconstruir roles sociales y profesiones del siglo XIX.</div></div>
+        </div>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Comentarios de clase</div>
+        <ul class="ped-lista">
+          <li><strong>Humor:</strong> Ver al prócer esperando su objeto genera una interacción afectiva y simpática con la figura histórica.</li>
+          <li><strong>Contextualización:</strong> Permite comparar la vida cotidiana del pasado con la actual a través de sus herramientas.</li>
+        </ul>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Cómo expandir en el aula</div>
+        <div class="ped-expandir"><strong>Museo de Aula:</strong> Traer objetos con historia de casa (fotos, llaves antiguas, cartas) y narrar su origen ante los compañeros.</div>
+      </div>
+    </div>
+  </div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  let dragId = null;
+
+  // Drag events on pool objects
+  document.querySelectorAll('.objeto').forEach(obj => {
+    obj.addEventListener('dragstart', e => {
+      dragId = e.target.closest('.objeto').id;
+      setTimeout(() => e.target.closest('.objeto').classList.add('dragging'), 0);
+    });
+    obj.addEventListener('dragend', e => {
+      e.target.closest('.objeto').classList.remove('dragging');
+    });
+  });
+
+  // Drop zones
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (!dragId) return;
+
+      const obj = document.getElementById(dragId);
+      if (!obj) return;
+
+      const expected = zone.getAttribute('data-match');
+
+      if (dragId === expected) {
+        // Devolver objeto que ya estaba si había otro
+        if (zone.querySelector('.objeto')) {
+          const anterior = zone.querySelector('.objeto');
+          anterior.draggable = true;
+          document.getElementById('pool').appendChild(anterior);
+        }
+        zone.appendChild(obj);
+        obj.draggable = false;
+        const card = zone.closest('.procer-card');
+        card.classList.add('acierto');
+        checkWin();
+      } else {
+        // Animación de error
+        const card = zone.closest('.procer-card');
+        card.classList.add('error-anim');
+        setTimeout(() => card.classList.remove('error-anim'), 400);
+      }
+      dragId = null;
+    });
+  });
+
+  // Pool también acepta drop (devolver objeto)
+  document.getElementById('pool').addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('pool').addEventListener('drop', e => {
+    e.preventDefault();
+    if (!dragId) return;
+    const obj = document.getElementById(dragId);
+    if (obj && obj.parentElement.classList.contains('drop-zone')) {
+      const card = obj.parentElement.closest('.procer-card');
+      card.classList.remove('acierto');
+      obj.draggable = true;
+      document.getElementById('pool').appendChild(obj);
+    }
+    dragId = null;
+  });
+
+  function checkWin() {
+    if (document.querySelectorAll('.procer-card.acierto').length === 5) {
+      document.getElementById('victoria').style.display = 'block';
+      document.getElementById('victoria').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  document.getElementById('btnReintentar').addEventListener('click', () => {
+    document.querySelectorAll('.drop-zone .objeto').forEach(obj => {
+      obj.draggable = true;
+      document.getElementById('pool').appendChild(obj);
+    });
+    document.querySelectorAll('.procer-card').forEach(c => c.classList.remove('acierto'));
+    document.getElementById('victoria').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+
+  // Pedagogy accordion
+  document.querySelectorAll('.pedagogia-header').forEach(h => {
+    h.addEventListener('click', () => {
+      h.classList.toggle('open');
+      h.nextElementSibling.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>

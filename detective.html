@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detective del Tiempo — Próceres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf7f2; --white: #ffffff; --ink: #1c1510;
+      --celeste: #4a9eca; --amarillo: #f5c842; --gris: #6b6258; --borde: #e0d8cc;
+      --ok: #2a7a45; --err: #c0392b;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+/* ── NAV UNIVERSAL ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown > a::before { content: ""; position: absolute; bottom: -8px; left: 0; right: 0; height: 8px; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 58px; left: 0; background: var(--bg); border: 2px solid var(--ink); min-width: 220px; z-index: 300; padding-top: 4px; max-height: 70vh; overflow-y: auto; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.7rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; white-space: nowrap; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--celeste); color: #ffffff; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* HERO */
+    .page-header { margin-top: 60px; background: var(--ink); padding: 3rem 2.5rem 2.5rem; border-bottom: 4px solid var(--amarillo); }
+    .page-header-tag { display: inline-block; background: var(--amarillo); color: var(--ink); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 0.95; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header h1 .accent { color: var(--amarillo); }
+    .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 52ch; }
+
+    /* ACTIVIDAD */
+    .actividad { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    /* CONTEXTO */
+    .contexto { border: 2px solid var(--ink); margin-bottom: 2rem; }
+    .contexto-header { background: var(--ink); color: var(--amarillo); font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.12em; padding: 0.6rem 1.25rem; }
+    .contexto-body { padding: 1rem 1.25rem; font-size: 0.82rem; font-weight: 300; line-height: 1.75; color: var(--gris); }
+
+    /* PROGRESO */
+    .progreso-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .progreso-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+    .progreso-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--celeste); }
+    .progreso-bar { height: 4px; background: var(--borde); border: 1px solid var(--ink); margin-bottom: 2rem; }
+    .progreso-fill { height: 100%; background: var(--amarillo); transition: width 0.4s ease; }
+
+    /* ESCENA */
+    .escena-header {
+      background: var(--ink); color: var(--white);
+      padding: 1rem 1.5rem; border: 2px solid var(--ink);
+      border-bottom: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 0.08em;
+    }
+    .escena-header span { color: var(--amarillo); }
+
+    .escena-descripcion {
+      border: 2px solid var(--ink); border-bottom: none;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.9rem; font-weight: 300; line-height: 1.7;
+      color: var(--ink); background: var(--white);
+      font-style: italic;
+    }
+
+    /* OPCIONES */
+    .opciones-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 2px solid var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .opcion-btn {
+      padding: 1.5rem 1rem;
+      border: none; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+      background: var(--bg); cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem; text-align: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .opcion-btn:nth-child(2n) { border-right: none; }
+    .opcion-btn:nth-last-child(-n+2) { border-bottom: none; }
+    .opcion-btn:hover:not(:disabled) { background: rgba(74,158,202,0.1); }
+    .opcion-btn:disabled { cursor: not-allowed; }
+    .opcion-btn.correcto { background: #eafaf1 !important; border-color: var(--ok) !important; }
+    .opcion-btn.incorrecto { background: #fdf0ef !important; border-color: var(--err) !important; }
+    .opcion-emoji { font-size: 2.2rem; line-height: 1; }
+    .opcion-texto { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em; color: var(--ink); }
+
+    /* FEEDBACK */
+    .feedback {
+      display: none; border: 2px solid var(--ink); padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem; animation: fadeUp 0.3s ease;
+    }
+    .feedback.ok { background: #eafaf1; border-color: var(--ok); }
+    .feedback.err { background: #fdf0ef; border-color: var(--err); }
+    .feedback-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; margin-bottom: 0.4rem; }
+    .feedback.ok .feedback-titulo { color: var(--ok); }
+    .feedback.err .feedback-titulo { color: var(--err); }
+    .feedback-texto { font-size: 0.875rem; line-height: 1.7; color: var(--ink); }
+    .feedback-texto strong { font-weight: 700; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    /* BTN SIGUIENTE */
+    .btn-siguiente {
+      width: 100%; padding: 1rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--ink); color: var(--white);
+      border: 2px solid var(--ink); cursor: pointer;
+      transition: background 0.18s; display: none; margin-bottom: 1.5rem;
+    }
+    .btn-siguiente:hover { background: var(--celeste); border-color: var(--celeste); }
+
+    /* FINAL */
+    #pantalla-final {
+      display: none; border: 2px solid var(--ink);
+      background: var(--ink); padding: 2.5rem; text-align: center;
+    }
+    #pantalla-final h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--amarillo); margin-bottom: 0.5rem; }
+    #pantalla-final .puntaje { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--white); line-height: 1; margin: 1rem 0; }
+    #pantalla-final .puntaje span { color: var(--amarillo); }
+    #pantalla-final p { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 40ch; margin: 0 auto 1.5rem; }
+    .btn-reiniciar { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: var(--amarillo); color: var(--ink); border: 2px solid var(--amarillo); cursor: pointer; transition: background 0.18s; }
+    .btn-reiniciar:hover { background: var(--white); border-color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(250,247,242,0.45); padding: 1.6rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; letter-spacing: 0.06em; border-top: 2px solid var(--ink); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; height: 56px; }
+      .nav-logo { font-size: 1rem; }
+      .nav-logo span { display: none; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 56px; left: 0; right: 0;
+        background: rgba(250,247,242,0.99);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
+      }
+      .nav-links.open li a { line-height: 1; padding: 1rem 1.5rem; border-bottom: 1px solid var(--borde); font-size: 0.95rem; color: var(--ink); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0; max-height: none; overflow-y: visible; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.8rem 1.5rem 0.8rem 2.5rem; font-size: 0.85rem; color: var(--gris); white-space: normal; }
+      .nav-links.open .nav-dropdown-menu a:hover { background: var(--celeste); color: #fff; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ── SECCIÓN PEDAGÓGICA ── */
+    .pedagogia {
+      margin-top: 3rem;
+      border: 2px solid var(--ink);
+    }
+    .pedagogia-header {
+      background: var(--ink); color: var(--amarillo);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.65rem 1.25rem;
+      display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+      user-select: none;
+    }
+    .pedagogia-header::after { content: '▾'; margin-left: auto; font-size: 0.75rem; transition: transform 0.25s; }
+    .pedagogia-header.open::after { transform: rotate(180deg); }
+    .pedagogia-body { display: none; padding: 1.5rem; background: var(--white); }
+    .pedagogia-body.open { display: block; }
+    .ped-seccion { margin-bottom: 1.5rem; }
+    .ped-seccion:last-child { margin-bottom: 0; }
+    .ped-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--ink); margin-bottom: 0.6rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--borde); }
+    .ped-ciclos { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--borde); margin-bottom: 0; }
+    .ped-ciclo { padding: 0.75rem 1rem; border-right: 1px solid var(--borde); }
+    .ped-ciclo:last-child { border-right: none; }
+    .ped-ciclo-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--celeste); margin-bottom: 0.35rem; }
+    .ped-ciclo-texto { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); }
+    .ped-lista { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ped-lista li { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); padding-left: 1rem; position: relative; }
+    .ped-lista li::before { content: '·'; position: absolute; left: 0; color: var(--amarillo); font-weight: 700; font-size: 1rem; }
+    .ped-expandir { background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.4); padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--ink); }
+    .ped-expandir strong { font-weight: 700; color: var(--ink); }
+    @media (max-width: 768px) {
+      .ped-ciclos { grid-template-columns: 1fr; }
+      .ped-ciclo { border-right: none; border-bottom: 1px solid var(--borde); }
+      .ped-ciclo:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · Héroes de la Patria</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="#">Actividades</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html" style="white-space:nowrap;">¿Qué prócer sos?</a>
+        <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
+        <a href="logistica.html" style="white-space:nowrap;">Cruce de los Andes</a>
+        <a href="puzzle.html" style="white-space:nowrap;">Puzzle patrio</a>
+        <a href="codigos.html" style="white-space:nowrap;">Hablando en códigos</a>
+        <a href="museo.html" style="white-space:nowrap;">Museo de objetos</a>
+        <a href="mito.html" style="white-space:nowrap;">¿Mito o Realidad?</a>
+        <a href="detective.html" class="active" style="white-space:nowrap;">Detective del Tiempo</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-tag">Actividad · Anacronismos</span>
+  <h1>Detective<br/><span class="accent">del Tiempo</span></h1>
+  <p>Encontrá el objeto que NO pertenece a la época. Alguien viajó en el tiempo y dejó algo fuera de lugar.</p>
+</div>
+
+<div class="actividad">
+
+  <div class="contexto">
+    <div class="contexto-header">¿Qué es un anacronismo?</div>
+    <div class="contexto-body">
+      Un anacronismo es un error histórico donde algo aparece en una época en la que todavía no existía. En las películas y novelas históricas a veces se cuelan anacronismos por error. En esta actividad, sos el detective que tiene que encontrarlos. ¿Podés descubrir qué objeto no pertenece a cada escena?
+    </div>
+  </div>
+
+  <div id="zona-juego">
+    <div class="progreso-wrap">
+      <span class="progreso-label">Misión</span>
+      <span class="progreso-num"><span id="numActual">1</span> / <span id="numTotal">7</span></span>
+    </div>
+    <div class="progreso-bar"><div class="progreso-fill" id="progresoFill" style="width:14%"></div></div>
+
+    <div class="escena-header">📍 Escena <span id="escenaNum">1</span> — <span id="escenaLugar"></span></div>
+    <div class="escena-descripcion" id="escenaDesc"></div>
+
+    <div class="opciones-grid" id="opcionesGrid"></div>
+
+    <div class="feedback" id="feedbackBox">
+      <div class="feedback-titulo" id="feedbackTitulo"></div>
+      <div class="feedback-texto" id="feedbackTexto"></div>
+    </div>
+
+    <button class="btn-siguiente" id="btnSiguiente" onclick="siguiente()">Siguiente misión →</button>
+  </div>
+
+  <div id="pantalla-final">
+    <h2>¡Caso Cerrado! 🕵️</h2>
+    <div class="puntaje"><span id="puntajeFinal">0</span><span style="font-size:2rem;color:rgba(255,255,255,0.4)"> / 7</span></div>
+    <p id="mensajeFinal"></p>
+    <button class="btn-reiniciar" onclick="reiniciar()">↺ Jugar de nuevo</button>
+  </div>
+
+</div>
+
+<div class="pedagogia">
+    <div class="pedagogia-header">🎓 Utilidad pedagógica</div>
+    <div class="pedagogia-body">
+      <div class="ped-seccion">
+        <div class="ped-titulo">Utilidad por ciclo</div>
+        <div class="ped-ciclos">
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Primer Ciclo</div><div class="ped-ciclo-texto">Reconocimiento visual de diferencias entre "época antigua" y "época moderna" a través de los objetos cotidianos.</div></div>
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Segundo Ciclo</div><div class="ped-ciclo-texto">Comprensión profunda de los anacronismos y análisis de los cambios y continuidades en los modos de vida.</div></div>
+        </div>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Comentarios de clase</div>
+        <ul class="ped-lista">
+          <li><strong>Humor:</strong> Ver un celular o auriculares en 1810 genera un choque visual que es el mejor pegamento para la memoria.</li>
+          <li><strong>Contextualización:</strong> No solo aprenden quiénes eran los próceres, sino cómo vivían: sin luz eléctrica, sin fotos, sin tecnología moderna.</li>
+        </ul>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Cómo expandir en el aula</div>
+        <div class="ped-expandir"><strong>Dramatización:</strong> Organizar una escena histórica donde el desafío sea no usar ninguna palabra o gesto que sea un "intruso" de nuestra época.</div>
+      </div>
+    </div>
+  </div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  const MISIONES = [
+    {
+      lugar: "El Cabildo, 25 de Mayo de 1810",
+      desc: "Los vocales del Cabildo están debatiendo el futuro del Virreinato. En la sala hay varios objetos sobre la mesa. ¿Cuál NO debería estar ahí?",
+      opciones: [
+        { texto: "Pluma de ganso", emoji: "🪶", intruso: false },
+        { texto: "Tintero de plata", emoji: "🏺", intruso: false },
+        { texto: "Reloj inteligente", emoji: "⌚", intruso: true },
+        { texto: "Vela de sebo", emoji: "🕯️", intruso: false }
+      ],
+      explicacion: "En 1810 no existían los relojes inteligentes ni la electricidad. Los únicos relojes disponibles eran mecánicos de bolsillo, objetos de gran lujo."
+    },
+    {
+      lugar: "Cruce de los Andes, Enero de 1817",
+      desc: "San Martín revisa las provisiones antes de iniciar la marcha. Entre los bultos de los soldados hay algo que definitivamente no debería estar ahí.",
+      opciones: [
+        { texto: "Charqui", emoji: "🥩", intruso: false },
+        { texto: "Auriculares bluetooth", emoji: "🎧", intruso: true },
+        { texto: "Catalejo", emoji: "🔭", intruso: false },
+        { texto: "Ponchos de lana", emoji: "🧥", intruso: false }
+      ],
+      explicacion: "Los auriculares bluetooth fueron inventados recién en el siglo XX. Los soldados escuchaban música con guitarras y armónicas durante las largas noches del cruce."
+    },
+    {
+      lugar: "Orillas del río Paraná, 27 de Febrero de 1812",
+      desc: "Belgrano está creando la primera bandera argentina. Alguien dejó algo fuera de lugar entre sus pertenencias.",
+      opciones: [
+        { texto: "Papel y tinta", emoji: "📜", intruso: false },
+        { texto: "Uniforme militar", emoji: "🎖️", intruso: false },
+        { texto: "Cámara de fotos", emoji: "📷", intruso: true },
+        { texto: "Sable", emoji: "⚔️", intruso: false }
+      ],
+      explicacion: "La fotografía fue inventada en 1839, casi 20 años después de la muerte de Belgrano en 1820. No existe ninguna fotografía de Belgrano — solo retratos pintados."
+    },
+    {
+      lugar: "Salta, Guerrillas de Güemes, 1815",
+      desc: "Los gauchos infernales de Güemes se preparan para una emboscada a los realistas. Algo en el campamento no tiene sentido.",
+      opciones: [
+        { texto: "Lanza gaucha", emoji: "🏹", intruso: false },
+        { texto: "Boleadoras", emoji: "⚫", intruso: false },
+        { texto: "Poncho rojo", emoji: "🧣", intruso: false },
+        { texto: "Teléfono celular", emoji: "📱", intruso: true }
+      ],
+      explicacion: "El teléfono fue inventado por Alexander Graham Bell en 1876 — más de 50 años después. Los mensajes entre Güemes y San Martín llegaban por correo a caballo o por mensajeros."
+    },
+    {
+      lugar: "Tucumán, 9 de Julio de 1816",
+      desc: "El Congreso de Tucumán está por firmar la Declaración de la Independencia. Entre los documentos y objetos de los diputados hay un intruso.",
+      opciones: [
+        { texto: "Plumas y tinteros", emoji: "🖋️", intruso: false },
+        { texto: "Mapa de América del Sur", emoji: "🗺️", intruso: false },
+        { texto: "Computadora portátil", emoji: "💻", intruso: true },
+        { texto: "Velas y candelabros", emoji: "🕯️", intruso: false }
+      ],
+      explicacion: "Las computadoras portátiles fueron inventadas a fines del siglo XX. En 1816, todo se escribía a mano con pluma y tinta. El Acta de la Independencia original fue escrita así."
+    },
+    {
+      lugar: "Alto Perú, Batalla de Pintatora, 1816",
+      desc: "Juana Azurduy lidera a sus tropas en combate. Entre el equipamiento de los guerrilleros hay algo anacrónico.",
+      opciones: [
+        { texto: "Sable de caballería", emoji: "⚔️", intruso: false },
+        { texto: "Pistola de chispa", emoji: "🔫", intruso: false },
+        { texto: "Drones de reconocimiento", emoji: "🚁", intruso: true },
+        { texto: "Caballo de guerra", emoji: "🐴", intruso: false }
+      ],
+      explicacion: "Los drones son tecnología del siglo XXI. En 1816, el reconocimiento del terreno se hacía a caballo o a pie, observando desde posiciones elevadas con catalejos."
+    },
+    {
+      lugar: "Buenos Aires, fallecimiento de Belgrano, 1820",
+      desc: "Manuel Belgrano está en su lecho de muerte, en la más absoluta pobreza. Alguien trajo algo completamente fuera de época.",
+      opciones: [
+        { texto: "Velas encendidas", emoji: "🕯️", intruso: false },
+        { texto: "Médico con instrumentos", emoji: "🩺", intruso: false },
+        { texto: "Rosario de madera", emoji: "📿", intruso: false },
+        { texto: "Televisor a color", emoji: "📺", intruso: true }
+      ],
+      explicacion: "La televisión a color fue desarrollada recién en los años 1950, más de 130 años después. En 1820, el entretenimiento en casa era la lectura, la música en vivo y la conversación."
+    }
+  ];
+
+  let indice = 0;
+  let puntaje = 0;
+
+  function cargar() {
+    const m = MISIONES[indice];
+    document.getElementById('numActual').textContent = indice + 1;
+    document.getElementById('numTotal').textContent = MISIONES.length;
+    document.getElementById('escenaNum').textContent = indice + 1;
+    document.getElementById('escenaLugar').textContent = m.lugar;
+    document.getElementById('escenaDesc').textContent = m.desc;
+    document.getElementById('progresoFill').style.width = ((indice + 1) / MISIONES.length * 100) + '%';
+    document.getElementById('feedbackBox').style.display = 'none';
+    document.getElementById('feedbackBox').className = 'feedback';
+    document.getElementById('btnSiguiente').style.display = 'none';
+
+    const grid = document.getElementById('opcionesGrid');
+    grid.innerHTML = '';
+    const shuffled = [...m.opciones].sort(() => Math.random() - 0.5);
+    shuffled.forEach(op => {
+      const btn = document.createElement('button');
+      btn.className = 'opcion-btn';
+      btn.innerHTML = `<span class="opcion-emoji">${op.emoji}</span><span class="opcion-texto">${op.texto}</span>`;
+      btn.addEventListener('click', () => verificar(op, btn));
+      grid.appendChild(btn);
+    });
+  }
+
+  function verificar(op, btn) {
+    const m = MISIONES[indice];
+    // Disable all buttons
+    document.querySelectorAll('.opcion-btn').forEach(b => { b.disabled = true; });
+
+    const fb = document.getElementById('feedbackBox');
+    fb.style.display = 'block';
+
+    if (op.intruso) {
+      puntaje++;
+      btn.classList.add('correcto');
+      fb.className = 'feedback ok';
+      document.getElementById('feedbackTitulo').textContent = '✅ ¡Encontraste el intruso!';
+      document.getElementById('feedbackTexto').textContent = m.explicacion;
+      document.getElementById('btnSiguiente').style.display = 'block';
+      document.getElementById('btnSiguiente').textContent =
+        indice < MISIONES.length - 1 ? 'Siguiente misión →' : 'Ver resultado final →';
+    } else {
+      btn.classList.add('incorrecto');
+      fb.className = 'feedback err';
+      document.getElementById('feedbackTitulo').textContent = '❌ Ese objeto sí existía';
+      document.getElementById('feedbackTexto').textContent = `"${op.texto}" era un objeto común en esa época. ¡Seguí buscando el intruso!`;
+      // Re-enable buttons except the wrong one
+      setTimeout(() => {
+        document.querySelectorAll('.opcion-btn').forEach(b => {
+          if (!b.classList.contains('incorrecto')) b.disabled = false;
+        });
+        fb.style.display = 'none';
+        btn.classList.remove('incorrecto');
+      }, 1500);
+    }
+  }
+
+  function siguiente() {
+    indice++;
+    if (indice < MISIONES.length) {
+      cargar();
+      document.getElementById('zona-juego').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      finalizar();
+    }
+  }
+
+  function finalizar() {
+    document.getElementById('zona-juego').style.display = 'none';
+    const final = document.getElementById('pantalla-final');
+    final.style.display = 'block';
+    document.getElementById('puntajeFinal').textContent = puntaje;
+    let msg = '';
+    if (puntaje <= 3) msg = 'Seguí practicando — la historia tiene muchos detalles que aprender.';
+    else if (puntaje <= 5) msg = 'Buen trabajo, detective. Tenés buen ojo para los anacronismos.';
+    else msg = '¡Caso cerrado con honor! Sos un experto en historia argentina.';
+    document.getElementById('mensajeFinal').textContent = msg;
+    final.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function reiniciar() {
+    indice = 0; puntaje = 0;
+    document.getElementById('pantalla-final').style.display = 'none';
+    document.getElementById('zona-juego').style.display = 'block';
+    cargar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+
+  cargar();
+
+  // Pedagogy accordion
+  document.querySelectorAll('.pedagogia-header').forEach(h => {
+    h.addEventListener('click', () => {
+      h.classList.toggle('open');
+      h.nextElementSibling.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>

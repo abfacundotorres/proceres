@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Mito o Realidad? — Próceres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf7f2; --white: #ffffff; --ink: #1c1510;
+      --celeste: #4a9eca; --amarillo: #f5c842; --gris: #6b6258; --borde: #e0d8cc;
+      --ok: #2a7a45; --err: #c0392b;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+/* ── NAV UNIVERSAL ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; background: var(--bg); border-bottom: 2px solid var(--ink); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--celeste); }
+    .nav-links { display: flex; list-style: none; }
+    .nav-links li a { display: block; padding: 0 1.1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); line-height: 60px; transition: color 0.15s; }
+    .nav-links li a:hover, .nav-links li.active > a { color: var(--celeste); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.6rem; }
+    .nav-dropdown > a::before { content: ""; position: absolute; bottom: -8px; left: 0; right: 0; height: 8px; }
+    .nav-dropdown-menu { display: none; position: absolute; top: 58px; left: 0; background: var(--bg); border: 2px solid var(--ink); min-width: 220px; z-index: 300; padding-top: 4px; max-height: 70vh; overflow-y: auto; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; padding: 0.7rem 1.25rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--borde); line-height: 1.4; transition: background 0.15s; white-space: nowrap; }
+    .nav-dropdown-menu a:last-child { border-bottom: none; }
+    .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--celeste); color: #ffffff; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
+    .nav-toggle span { display: block; width: 26px; height: 2px; background: var(--ink); }
+
+    /* HERO */
+    .page-header { margin-top: 60px; background: var(--ink); padding: 3rem 2.5rem 2.5rem; border-bottom: 4px solid var(--amarillo); }
+    .page-header-tag { display: inline-block; background: var(--amarillo); color: var(--ink); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.3rem 0.75rem; margin-bottom: 1rem; }
+    .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 0.95; color: var(--white); margin-bottom: 0.75rem; }
+    .page-header h1 .accent { color: var(--amarillo); }
+    .page-header p { font-size: 0.9rem; font-weight: 300; color: rgba(250,247,242,0.65); max-width: 52ch; }
+
+    /* ACTIVIDAD */
+    .actividad { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    /* CONTEXTO */
+    .contexto { border: 2px solid var(--ink); margin-bottom: 2rem; }
+    .contexto-header { background: var(--ink); color: var(--amarillo); font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.12em; padding: 0.6rem 1.25rem; }
+    .contexto-body { padding: 1rem 1.25rem; font-size: 0.82rem; font-weight: 300; line-height: 1.75; color: var(--gris); }
+
+    /* PROGRESO */
+    .progreso-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .progreso-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+    .progreso-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--celeste); }
+    .progreso-bar { height: 4px; background: var(--borde); border: 1px solid var(--ink); margin-bottom: 2rem; }
+    .progreso-fill { height: 100%; background: var(--celeste); transition: width 0.4s ease; }
+
+    /* TARJETA DE PREGUNTA */
+    .pregunta-card {
+      border: 2px solid var(--ink);
+      background: var(--white);
+      padding: 2.5rem 2rem;
+      margin-bottom: 1.5rem;
+      min-height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    .pregunta-card.ok { border-color: var(--ok); background: #eafaf1; }
+    .pregunta-card.err { border-color: var(--err); background: #fdf0ef; }
+
+    .pregunta-texto {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+      line-height: 1.1; letter-spacing: 0.02em;
+      color: var(--ink);
+    }
+
+    /* BOTONES */
+    .btns-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 2px solid var(--ink); margin-bottom: 1.5rem; }
+    .btn-mito, .btn-realidad {
+      padding: 1.25rem; border: none; cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.06em;
+      transition: background 0.15s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .btn-mito { background: #fdf0ef; color: var(--err); border-right: 2px solid var(--ink); }
+    .btn-mito:hover { background: var(--err); color: var(--white); }
+    .btn-realidad { background: #eafaf1; color: var(--ok); }
+    .btn-realidad:hover { background: var(--ok); color: var(--white); }
+    .btn-mito:active, .btn-realidad:active { transform: scale(0.97); }
+    .btn-mito:disabled, .btn-realidad:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* FEEDBACK */
+    .feedback {
+      display: none; border: 2px solid var(--ink);
+      padding: 1.5rem; margin-bottom: 1.5rem;
+      animation: fadeUp 0.3s ease;
+    }
+    .feedback.ok { background: #eafaf1; border-color: var(--ok); }
+    .feedback.err { background: #fdf0ef; border-color: var(--err); }
+    .feedback-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .feedback.ok .feedback-titulo { color: var(--ok); }
+    .feedback.err .feedback-titulo { color: var(--err); }
+    .feedback-texto { font-size: 0.875rem; line-height: 1.75; color: var(--ink); }
+    .feedback-texto strong { font-weight: 700; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    /* BTN SIGUIENTE */
+    .btn-siguiente {
+      width: 100%; padding: 1rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--ink); color: var(--white);
+      border: 2px solid var(--ink); cursor: pointer;
+      transition: background 0.18s; margin-bottom: 1.5rem;
+      display: none;
+    }
+    .btn-siguiente:hover { background: var(--celeste); border-color: var(--celeste); }
+
+    /* FINAL */
+    #pantalla-final {
+      display: none; border: 2px solid var(--ink);
+      background: var(--ink); padding: 2.5rem; text-align: center;
+    }
+    #pantalla-final h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--amarillo); margin-bottom: 0.5rem; }
+    #pantalla-final .puntaje { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--white); line-height: 1; margin: 1rem 0; }
+    #pantalla-final .puntaje span { color: var(--amarillo); }
+    #pantalla-final p { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 40ch; margin: 0 auto 1.5rem; }
+    .btn-reiniciar {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; background: var(--amarillo); color: var(--ink);
+      border: 2px solid var(--amarillo); cursor: pointer; transition: background 0.18s;
+    }
+    .btn-reiniciar:hover { background: var(--white); border-color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--ink); color: rgba(250,247,242,0.45); padding: 1.6rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; letter-spacing: 0.06em; border-top: 2px solid var(--ink); }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+    footer a { color: var(--amarillo); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.25rem; height: 56px; }
+      .nav-logo { font-size: 1rem; }
+      .nav-logo span { display: none; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 56px; left: 0; right: 0;
+        background: rgba(250,247,242,0.99);
+        border-bottom: 2px solid var(--ink);
+        z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
+      }
+      .nav-links.open li a { line-height: 1; padding: 1rem 1.5rem; border-bottom: 1px solid var(--borde); font-size: 0.95rem; color: var(--ink); }
+      .nav-links.open .nav-dropdown-menu { display: block; position: static; border: none; background: rgba(0,0,0,0.04); min-width: auto; padding-top: 0; max-height: none; overflow-y: visible; }
+      .nav-links.open .nav-dropdown-menu a { padding: 0.8rem 1.5rem 0.8rem 2.5rem; font-size: 0.85rem; color: var(--gris); white-space: normal; }
+      .nav-links.open .nav-dropdown-menu a:hover { background: var(--celeste); color: #fff; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ── SECCIÓN PEDAGÓGICA ── */
+    .pedagogia {
+      margin-top: 3rem;
+      border: 2px solid var(--ink);
+    }
+    .pedagogia-header {
+      background: var(--ink); color: var(--amarillo);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.65rem 1.25rem;
+      display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+      user-select: none;
+    }
+    .pedagogia-header::after { content: '▾'; margin-left: auto; font-size: 0.75rem; transition: transform 0.25s; }
+    .pedagogia-header.open::after { transform: rotate(180deg); }
+    .pedagogia-body { display: none; padding: 1.5rem; background: var(--white); }
+    .pedagogia-body.open { display: block; }
+    .ped-seccion { margin-bottom: 1.5rem; }
+    .ped-seccion:last-child { margin-bottom: 0; }
+    .ped-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--ink); margin-bottom: 0.6rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--borde); }
+    .ped-ciclos { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--borde); margin-bottom: 0; }
+    .ped-ciclo { padding: 0.75rem 1rem; border-right: 1px solid var(--borde); }
+    .ped-ciclo:last-child { border-right: none; }
+    .ped-ciclo-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--celeste); margin-bottom: 0.35rem; }
+    .ped-ciclo-texto { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); }
+    .ped-lista { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ped-lista li { font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--gris); padding-left: 1rem; position: relative; }
+    .ped-lista li::before { content: '·'; position: absolute; left: 0; color: var(--amarillo); font-weight: 700; font-size: 1rem; }
+    .ped-expandir { background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.4); padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 300; line-height: 1.65; color: var(--ink); }
+    .ped-expandir strong { font-weight: 700; color: var(--ink); }
+    @media (max-width: 768px) {
+      .ped-ciclos { grid-template-columns: 1fr; }
+      .ped-ciclo { border-right: none; border-bottom: 1px solid var(--borde); }
+      .ped-ciclo:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Próceres<span> · Héroes de la Patria</span></a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown active">
+      <a href="#">Actividades</a>
+      <div class="nav-dropdown-menu">
+        <a href="quiz.html" style="white-space:nowrap;">¿Qué prócer sos?</a>
+        <a href="timeline.html" style="white-space:nowrap;">Línea de tiempo</a>
+        <a href="logistica.html" style="white-space:nowrap;">Cruce de los Andes</a>
+        <a href="puzzle.html" style="white-space:nowrap;">Puzzle patrio</a>
+        <a href="codigos.html" style="white-space:nowrap;">Hablando en códigos</a>
+        <a href="museo.html" style="white-space:nowrap;">Museo de objetos</a>
+        <a href="mito.html" class="active" style="white-space:nowrap;">¿Mito o Realidad?</a>
+        <a href="detective.html" style="white-space:nowrap;">Detective del Tiempo</a>
+      </div>
+    </li>
+    <li><a href="clases-ia.html">Clases de IA</a></li>
+    <li><a href="acerca.html">Acerca de mí</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="page-header-tag">Actividad · Historia crítica</span>
+  <h1>¿Mito o<br/><span class="accent">Realidad?</span></h1>
+  <p>La historia argentina está llena de leyendas. ¿Podés distinguir lo que realmente pasó de lo que es un mito?</p>
+</div>
+
+<div class="actividad">
+
+  <div class="contexto">
+    <div class="contexto-header">La historia y sus mitos</div>
+    <div class="contexto-body">
+      A lo largo de los años, se fueron construyendo muchos mitos alrededor de los próceres argentinos. Algunos los idealizaron demasiado, otros los redujeron a una sola hazaña. La historia real es más interesante, más humana y más sorprendente que los mitos. Este desafío te invita a descubrir qué es verdad y qué es leyenda.
+    </div>
+  </div>
+
+  <div class="progreso-wrap">
+    <span class="progreso-label">Pregunta</span>
+    <span class="progreso-num"><span id="numActual">1</span> / <span id="numTotal">10</span></span>
+  </div>
+  <div class="progreso-bar"><div class="progreso-fill" id="progresoFill" style="width:10%"></div></div>
+
+  <div id="zona-juego">
+    <div class="pregunta-card" id="preguntaCard">
+      <p class="pregunta-texto" id="preguntaTexto"></p>
+    </div>
+
+    <div class="btns-wrap">
+      <button class="btn-mito" id="btnMito" onclick="evaluar(false)">❌ Es un MITO</button>
+      <button class="btn-realidad" id="btnRealidad" onclick="evaluar(true)">✅ Es REALIDAD</button>
+    </div>
+
+    <div class="feedback" id="feedbackBox">
+      <div class="feedback-titulo" id="feedbackTitulo"></div>
+      <div class="feedback-texto" id="feedbackTexto"></div>
+    </div>
+
+    <button class="btn-siguiente" id="btnSiguiente" onclick="siguiente()">Siguiente pregunta →</button>
+  </div>
+
+  <div id="pantalla-final">
+    <h2>¡Desafío completado!</h2>
+    <div class="puntaje"><span id="puntajeFinal">0</span> / 10</div>
+    <p id="mensajeFinal"></p>
+    <button class="btn-reiniciar" onclick="reiniciar()">↺ Jugar de nuevo</button>
+  </div>
+
+</div>
+
+<div class="pedagogia">
+    <div class="pedagogia-header">🎓 Utilidad pedagógica</div>
+    <div class="pedagogia-body">
+      <div class="ped-seccion">
+        <div class="ped-titulo">Utilidad por ciclo</div>
+        <div class="ped-ciclos">
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Primer Ciclo</div><div class="ped-ciclo-texto">Iniciación en la distinción entre relatos fantásticos y hechos reales de la historia argentina.</div></div>
+          <div class="ped-ciclo"><div class="ped-ciclo-label">Segundo Ciclo</div><div class="ped-ciclo-texto">Desarrollo pleno del Pensamiento Crítico: confrontar diversas versiones de la historia y analizar fuentes.</div></div>
+        </div>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Comentarios de clase</div>
+        <ul class="ped-lista">
+          <li><strong>Humor:</strong> El impacto de saber que el "caballo blanco" no era tal genera un clima de complicidad y asombro genuino.</li>
+          <li><strong>Contextualización:</strong> Humaniza a los próceres, mostrándolos con problemas de salud, dinero y desafíos reales.</li>
+        </ul>
+      </div>
+      <div class="ped-seccion">
+        <div class="ped-titulo">Cómo expandir en el aula</div>
+        <div class="ped-expandir"><strong>Mesa Redonda:</strong> Los alumnos debaten otros mitos populares (como el de los paraguas en el Cabildo) buscando pruebas y fuentes.</div>
+      </div>
+    </div>
+  </div>
+
+<footer>
+  <span class="footer-logo">Próceres</span>
+  <div class="footer-links">
+    <a href="acerca.html">Facundo Torres</a>
+  </div>
+  <span>© 2026</span>
+</footer>
+
+<script>
+  const DESAFIOS = [
+    {
+      pregunta: "¿El caballo de San Martín en el cruce de los Andes era blanco?",
+      esRealidad: false,
+      titulo: "¡Es un MITO!",
+      explicacion: "Los caballos blancos eran demasiado llamativos para los enemigos. San Martín cruzó probablemente en una <strong>mula</strong> — mucho más resistente para la montaña — y su caballo de batalla era bayo (marrón claro)."
+    },
+    {
+      pregunta: "¿Manuel Belgrano murió siendo muy rico gracias a su carrera como prócer?",
+      esRealidad: false,
+      titulo: "¡Es un MITO!",
+      explicacion: "Belgrano donó casi todo su sueldo para construir escuelas públicas. Murió en 1820 en la más absoluta pobreza. Su lápida fue hecha con el mármol de una cómoda de su propia casa."
+    },
+    {
+      pregunta: "¿El 25 de Mayo de 1810 casi nadie en la plaza tenía paraguas?",
+      esRealidad: true,
+      titulo: "¡Es REALIDAD!",
+      explicacion: "En 1810 los paraguas eran objetos de lujo traídos desde Europa. Solo las familias muy ricas podían tener uno. La mayoría de la gente que se reunió en la Plaza Mayor ese día lluvioso no tenía cómo protegerse."
+    },
+    {
+      pregunta: "¿Juana Azurduy lideró tropas en combate montada a caballo?",
+      esRealidad: true,
+      titulo: "¡Es REALIDAD!",
+      explicacion: "Azurduy combatió personalmente al frente de sus tropas en más de 23 batallas. En la Batalla de Pintatora (1816) capturó una espada realista ella misma. Belgrano le otorgó su propio sable en reconocimiento."
+    },
+    {
+      pregunta: "¿San Martín y Bolívar se reunieron y acordaron juntos cómo terminar la guerra?",
+      esRealidad: false,
+      titulo: "¡Es un MITO!",
+      explicacion: "Se reunieron en Guayaquil en 1822, pero lo que hablaron es un misterio histórico: no quedaron registros. Lo cierto es que San Martín se retiró poco después, cediendo el mando a Bolívar. Las razones exactas nunca se supieron."
+    },
+    {
+      pregunta: "¿Sarmiento llegó a ser presidente de Argentina?",
+      esRealidad: true,
+      titulo: "¡Es REALIDAD!",
+      explicacion: "Domingo Faustino Sarmiento fue presidente de Argentina entre 1868 y 1874. Durante su mandato fundó cientos de escuelas, trajo maestras norteamericanas y expandió masivamente la educación pública en todo el país."
+    },
+    {
+      pregunta: "¿Güemes murió en batalla peleando contra los realistas?",
+      esRealidad: false,
+      titulo: "¡Es un MITO!",
+      explicacion: "Güemes fue herido mortalmente en una <strong>emboscada</strong> preparada por realistas y también por enemigos políticos locales en junio de 1821. No murió en combate abierto sino a causa de esa herida días después, a los 35 años."
+    },
+    {
+      pregunta: "¿María Remedios del Valle fue llamada la Madre de la Patria por sus contemporáneos?",
+      esRealidad: false,
+      titulo: "¡Es un MITO!",
+      explicacion: "Ese título llegó mucho después, de manera póstuma. Sus contemporáneos la llamaban <strong>\"Madre de la Patria\"</strong> solo en sentido informal. Durante su vida fue ignorada por el Estado durante décadas y vivió en la pobreza."
+    },
+    {
+      pregunta: "¿La bandera argentina tiene los colores del cielo y las nubes?",
+      esRealidad: true,
+      titulo: "¡Es REALIDAD!",
+      explicacion: "Esa es la explicación más aceptada históricamente: Belgrano eligió el celeste y blanco inspirado en el cielo despejado y las nubes del río Paraná. Aunque también hay teorías que relacionan los colores con la dinastía española de los Borbones."
+    },
+    {
+      pregunta: "¿El Congreso que declaró la Independencia en 1816 se realizó en Buenos Aires?",
+      esRealidad: false,
+      titulo: "¡Es un MITO!",
+      explicacion: "El Congreso de Tucumán se realizó en la ciudad de <strong>San Miguel de Tucumán</strong>, no en Buenos Aires. Se eligió esa ciudad por su ubicación estratégica, más alejada de la amenaza realista y más cercana al norte en conflicto."
+    }
+  ];
+
+  let indice = 0;
+  let puntaje = 0;
+  let respondida = false;
+
+  function cargar() {
+    respondida = false;
+    const d = DESAFIOS[indice];
+    document.getElementById('preguntaTexto').textContent = d.pregunta;
+    document.getElementById('preguntaCard').className = 'pregunta-card';
+    document.getElementById('feedbackBox').style.display = 'none';
+    document.getElementById('feedbackBox').className = 'feedback';
+    document.getElementById('btnSiguiente').style.display = 'none';
+    document.getElementById('btnMito').disabled = false;
+    document.getElementById('btnRealidad').disabled = false;
+    document.getElementById('numActual').textContent = indice + 1;
+    document.getElementById('numTotal').textContent = DESAFIOS.length;
+    document.getElementById('progresoFill').style.width = ((indice + 1) / DESAFIOS.length * 100) + '%';
+  }
+
+  function evaluar(eleccion) {
+    if (respondida) return;
+    respondida = true;
+    document.getElementById('btnMito').disabled = true;
+    document.getElementById('btnRealidad').disabled = true;
+
+    const d = DESAFIOS[indice];
+    const correcto = eleccion === d.esRealidad;
+    if (correcto) puntaje++;
+
+    const card = document.getElementById('preguntaCard');
+    card.classList.add(correcto ? 'ok' : 'err');
+
+    const fb = document.getElementById('feedbackBox');
+    fb.className = 'feedback ' + (correcto ? 'ok' : 'err');
+    fb.style.display = 'block';
+    document.getElementById('feedbackTitulo').textContent = correcto ? '✅ ' + d.titulo : '❌ ' + d.titulo;
+    document.getElementById('feedbackTexto').innerHTML = d.explicacion;
+
+    document.getElementById('btnSiguiente').style.display = 'block';
+    document.getElementById('btnSiguiente').textContent =
+      indice < DESAFIOS.length - 1 ? 'Siguiente pregunta →' : 'Ver resultado final →';
+  }
+
+  function siguiente() {
+    indice++;
+    if (indice < DESAFIOS.length) {
+      cargar();
+      document.getElementById('zona-juego').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      finalizar();
+    }
+  }
+
+  function finalizar() {
+    document.getElementById('zona-juego').style.display = 'none';
+    const final = document.getElementById('pantalla-final');
+    final.style.display = 'block';
+    document.getElementById('puntajeFinal').textContent = puntaje;
+
+    let msg = '';
+    if (puntaje <= 3) msg = 'No importa, la historia tiene muchas sorpresas. ¡Seguí explorando las actividades!';
+    else if (puntaje <= 6) msg = 'Buen trabajo. Conocés bastante sobre los próceres. ¡Seguí aprendiendo!';
+    else if (puntaje <= 8) msg = '¡Muy bien! Tenés un ojo crítico para separar el mito de la realidad.';
+    else msg = '¡Excelente! Sos un verdadero historiador de la patria argentina.';
+
+    document.getElementById('mensajeFinal').textContent = msg;
+    final.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function reiniciar() {
+    indice = 0; puntaje = 0; respondida = false;
+    document.getElementById('pantalla-final').style.display = 'none';
+    document.getElementById('zona-juego').style.display = 'block';
+    cargar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('navToggle').addEventListener('click', () =>
+    document.getElementById('navLinks').classList.toggle('open')
+  );
+
+  cargar();
+
+  // Pedagogy accordion
+  document.querySelectorAll('.pedagogia-header').forEach(h => {
+    h.addEventListener('click', () => {
+      h.classList.toggle('open');
+      h.nextElementSibling.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>
