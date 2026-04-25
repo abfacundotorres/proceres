@@ -376,11 +376,10 @@
   }
 
   function cargarMision(i) {
+    misionActual = i;
     const m = MISIONES[i];
     seleccionadas = new Set();
 
-    document.getElementById('mision-titulo').textContent = m.titulo;
-    document.getElementById('mision-subtitulo').textContent = m.subtitulo;
     document.getElementById('mision-contexto-header').textContent = m.titulo + ' — Contexto';
     document.getElementById('mision-contexto-body').textContent = m.contexto;
     document.getElementById('mision-instruccion').textContent = m.instruccion;
