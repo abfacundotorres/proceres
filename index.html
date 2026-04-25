@@ -181,61 +181,104 @@
     footer a { color: var(--amarillo); text-decoration: none; }
     .footer-links { display: flex; gap: 1.5rem; }
 
-    /* RESPONSIVE */
+    /* RESPONSIVE MOBILE */
     @media (max-width: 768px) {
-      nav { padding: 0 1.25rem; }
-      .nav-logo { font-size: 1.1rem; }
+
+      /* NAV */
+      nav { padding: 0 1.25rem; height: 56px; }
+      .nav-logo { font-size: 1rem; letter-spacing: 0.05em; }
+      .nav-logo span { display: none; }
       .nav-links { display: none; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: fixed; top: 60px; left: 0; right: 0;
-        background: rgba(28,21,16,0.98);
-        border-bottom: 1px solid rgba(245,200,66,0.2);
-        z-index: 199;
+        position: fixed; top: 56px; left: 0; right: 0;
+        background: rgba(14,11,7,0.98);
+        border-bottom: 1px solid rgba(245,200,66,0.25);
+        z-index: 199; max-height: calc(100vh - 56px); overflow-y: auto;
       }
       .nav-links.open li a {
-        line-height: 1; padding: 1.1rem 1.5rem;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        color: rgba(255,255,255,0.85);
-        font-size: 0.9rem;
+        line-height: 1; padding: 1rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        color: rgba(255,255,255,0.9); font-size: 1rem; letter-spacing: 0.06em;
       }
       .nav-links.open .nav-dropdown-menu {
         display: block; position: static; border: none;
-        background: rgba(255,255,255,0.05); min-width: auto;
-        padding-top: 0;
+        background: rgba(255,255,255,0.04); min-width: auto; padding-top: 0;
       }
       .nav-links.open .nav-dropdown-menu a {
-        padding: 0.85rem 1.5rem 0.85rem 2.5rem;
-        font-size: 0.82rem;
-        color: rgba(255,255,255,0.7);
+        padding: 0.85rem 1.5rem 0.85rem 2.75rem;
+        font-size: 0.88rem; color: rgba(255,255,255,0.7);
       }
       .nav-toggle { display: flex; }
 
+      /* PORTADA */
+      .portada { margin-top: 56px; }
+
+      /* FILAS — modo tarjeta fullscreen con overlay */
       .fila, .fila.reverse {
-        grid-template-columns: 1fr;
-        height: auto;
-        min-height: unset;
+        display: block;
+        height: 100svh;
+        min-height: 500px;
+        position: relative;
+        overflow: hidden;
       }
+
+      /* imagen cubre todo */
       .fila-img {
-        height: 75vw;
-        min-height: 280px;
-        order: 0 !important;
-        padding: 1rem;
+        position: absolute !important;
+        inset: 0;
+        height: 100% !important;
+        padding: 0;
+        order: unset !important;
+        z-index: 0;
       }
+      .fila-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+        border-radius: 0;
+        filter: brightness(0.45) saturate(0.8);
+        box-shadow: none;
+      }
+
+      /* gradient overlay */
+      .fila-img::after {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(to top, rgba(14,11,7,0.95) 0%, rgba(14,11,7,0.4) 55%, transparent 100%);
+        z-index: 1;
+      }
+
+      /* texto sobre la imagen */
       .fila-body {
-        order: 1 !important;
-        padding: 1.75rem 1.25rem;
-        border-left: none !important;
-        border-right: none !important;
-        border-top: 1px solid rgba(255,255,255,0.08);
+        position: absolute !important;
+        bottom: 0; left: 0; right: 0;
+        order: unset !important;
+        padding: 2rem 1.5rem 2.5rem;
+        border: none !important;
+        background: transparent;
+        z-index: 2;
       }
       .fila-body::before { display: none; }
-      .fila-tag { font-size: 0.7rem; padding: 0.3rem 0.75rem; }
-      .fila-title { font-size: 2rem; margin-bottom: 0.75rem; }
-      .fila-desc { font-size: 0.92rem; max-width: 100%; margin-bottom: 1.25rem; }
-      .btn-fila { font-size: 0.78rem; padding: 0.65rem 1.25rem; }
 
-      footer { flex-direction: column; align-items: flex-start; padding: 1.25rem; }
+      .fila-tag {
+        font-size: 0.65rem; padding: 0.3rem 0.75rem; margin-bottom: 0.75rem;
+      }
+      .fila-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+        margin-bottom: 0.75rem; line-height: 1;
+      }
+      .fila-desc {
+        font-size: 0.9rem; max-width: 100%;
+        margin-bottom: 1.25rem; line-height: 1.65;
+        color: rgba(255,255,255,0.75);
+      }
+      .btn-fila {
+        font-size: 0.8rem; padding: 0.7rem 1.4rem;
+      }
+      .fila-btns { gap: 0.6rem; }
+
+      footer { flex-direction: column; align-items: flex-start; padding: 1.25rem; font-size: 0.8rem; }
     }
   </style>
 </head>
