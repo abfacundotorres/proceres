@@ -52,6 +52,18 @@
     .contexto-body { padding: 1rem 1.25rem; font-size: 0.82rem; font-weight: 300; line-height: 1.75; color: var(--gris); }
     .contexto-body strong { color: var(--ink); font-weight: 600; }
 
+    /* SELECTOR MISIÓN */
+    .selector-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.06em; color: var(--ink); margin-bottom: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.5rem; }
+    .mision-selector { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border: 2px solid var(--ink); margin-bottom: 2rem; }
+    .mision-btn { padding: 1rem; border: none; border-right: 2px solid var(--ink); background: var(--bg); cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; transition: background 0.15s; text-align: left; }
+    .mision-btn:last-child { border-right: none; }
+    .mision-btn:hover { background: var(--amarillo); }
+    .mision-btn.activo { background: var(--ink); }
+    .mision-titulo-btn { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.05em; color: var(--ink); }
+    .mision-btn.activo .mision-titulo-btn { color: var(--amarillo); }
+    .mision-sub-btn { font-size: 0.65rem; color: var(--gris); font-weight: 500; }
+    .mision-btn.activo .mision-sub-btn { color: rgba(255,255,255,0.55); }
+
     /* CONTADOR */
     .contador-wrap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 0.75rem 1.25rem; border: 2px solid var(--ink); background: var(--white); }
     .contador-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
@@ -152,6 +164,10 @@
       .actividad { padding: 2rem 1rem 4rem; }
       .contexto-body { font-size: 0.88rem; }
       .opciones-grid { grid-template-columns: 1fr; }
+      .mision-selector { grid-template-columns: 1fr; }
+      .mision-btn { border-right: none !important; border-bottom: 2px solid var(--ink); }
+      .mision-btn:last-child { border-bottom: none; }
+      .opciones-grid { grid-template-columns: 1fr; }
       .opcion { border-right: none !important; border-bottom: 2px solid var(--ink) !important; }
       .opcion:last-child { border-bottom: none !important; }
       .opcion-emoji { font-size: 1.6rem; }
@@ -192,57 +208,25 @@
 <div class="actividad">
   <!-- CONTEXTO -->
   <div class="contexto">
-    <div class="contexto-header">El Cruce de los Andes — Enero-Febrero de 1817</div>
-    <div class="contexto-body">
-      El cruce de los Andes fue una de las hazañas militares más extraordinarias de la historia. San Martín organizó durante dos años el <strong>Ejército de los Andes</strong> en Mendoza: 5.423 soldados, 9.281 mulas, 1.600 caballos y toneladas de equipamiento. Cruzaron la cordillera por varios pasos a más de 4.000 metros de altura, con frío extremo, mal de altura y caminos imposibles. El objetivo era liberar Chile — y desde allí, el Perú — del dominio español. La victoria en la <strong>Batalla de Chacabuco</strong> (12 de febrero de 1817) fue el resultado directo de esta travesía.
-    </div>
+    <div class="contexto-header" id="mision-contexto-header">Cruce de los Andes — Contexto</div>
+    <div class="contexto-body" id="mision-contexto-body"></div>
   </div>
 
-  <div class="instruccion">
-    🏔️ El Ejército de los Andes enfrenta alturas extremas, frío, caminos imposibles y semanas de marcha. Seleccioná los <strong>4 suministros</strong> que realmente llevaron y hacé clic en "Iniciar cruce".
-  </div>
+  <!-- SELECTOR DE MISIÓN -->
+  <p class="selector-titulo">Elegí tu misión</p>
+  <div class="mision-selector" id="mision-selector"></div>
 
+  <div class="instruccion" id="mision-instruccion"></div>
+
+  <!-- CONTADOR -->
   <div class="contador-wrap">
-    <span class="contador-label">Suministros seleccionados</span>
+    <span class="contador-label">Elementos seleccionados</span>
     <span class="contador-num"><span id="contNum">0</span> / 4</span>
   </div>
 
-  <div class="opciones-grid" id="opcionesGrid">
-    <div class="opcion" data-ok="true" data-feedback="¡Correcto! El charqui era carne seca que aportaba proteínas sin echarse a perder durante semanas de marcha.">
-      <span class="opcion-emoji">🥩</span>
-      <div><div class="opcion-texto">Charqui</div><div class="opcion-sub">Carne seca y salada</div></div>
-    </div>
-    <div class="opcion" data-ok="false" data-feedback="Un piano era imposible de transportar en mulas por los pasos andinos. Demasiado pesado e inútil en combate.">
-      <span class="opcion-emoji">🎹</span>
-      <div><div class="opcion-texto">Piano</div><div class="opcion-sub">Instrumento musical</div></div>
-    </div>
-    <div class="opcion" data-ok="true" data-feedback="¡Exacto! Las mulas son expertas en caminos de montaña. El ejército usó miles para transportar provisiones y artillería.">
-      <span class="opcion-emoji">🫏</span>
-      <div><div class="opcion-texto">Mulas</div><div class="opcion-sub">Transporte de carga</div></div>
-    </div>
-    <div class="opcion" data-ok="true" data-feedback="¡Gran elección! El ajo y la cebolla se usaban como remedio para el mal de altura. Era medicina natural disponible para todos.">
-      <span class="opcion-emoji">🧄</span>
-      <div><div class="opcion-texto">Ajo y cebolla</div><div class="opcion-sub">Remedio para el soroche</div></div>
-    </div>
-    <div class="opcion" data-ok="false" data-feedback="Los helados eran un lujo imposible. Sin cadena de frío y con temperaturas extremas, era un suministro absurdo para una campaña militar.">
-      <span class="opcion-emoji">🍦</span>
-      <div><div class="opcion-texto">Helados</div><div class="opcion-sub">Postre refrescante</div></div>
-    </div>
-    <div class="opcion" data-ok="true" data-feedback="¡Clave! En la cumbre andina las temperaturas bajan brutalmente de noche. Los ponchos protegieron a miles de soldados del frío extremo.">
-      <span class="opcion-emoji">🧥</span>
-      <div><div class="opcion-texto">Ponchos</div><div class="opcion-sub">Abrigo de lana gruesa</div></div>
-    </div>
-    <div class="opcion" data-ok="false" data-feedback="Sin refrigeración, el pescado fresco se hubiera podrido en horas. Era un suministro completamente impráctivo para una travesía de semanas.">
-      <span class="opcion-emoji">🐟</span>
-      <div><div class="opcion-texto">Pescado fresco</div><div class="opcion-sub">Alimento perecedero</div></div>
-    </div>
-    <div class="opcion" data-ok="false" data-feedback="Las sombrillas de seda habrían sido un peso inútil. El ejército necesitaba equipamiento funcional, no artículos de lujo.">
-      <span class="opcion-emoji">☂️</span>
-      <div><div class="opcion-texto">Sombrillas de seda</div><div class="opcion-sub">Accesorio de lujo</div></div>
-    </div>
-  </div>
+  <div class="opciones-grid" id="opcionesGrid"></div>
 
-  <button class="btn-verificar" id="btnVerificar" disabled>🏔️ Iniciar cruce de los Andes</button>
+  <button class="btn-verificar" id="btnVerificar" disabled>▶ Confirmar selección</button>
 
   <div class="feedback-list" id="feedbackList"></div>
 
@@ -262,70 +246,159 @@
 </footer>
 
 <script>
-  const opciones = document.querySelectorAll('.opcion');
-  const btnVerificar = document.getElementById('btnVerificar');
-  const contNum = document.getElementById('contNum');
+  const MISIONES = [
+    {
+      id: "cruce",
+      titulo: "Cruce de los Andes",
+      subtitulo: "Enero de 1817 — San Martín",
+      contexto: "El Ejército de los Andes debe cruzar la cordillera a más de 4.000 metros de altura, con frío extremo, caminos imposibles y semanas de marcha.",
+      instruccion: "🏔️ Elegí exactamente 4 suministros para sobrevivir el cruce.",
+      opciones: [
+        { emoji:"🥩", texto:"Charqui", sub:"Carne seca y salada", ok:true,  fb:"¡Correcto! El charqui aportaba proteínas sin echarse a perder durante semanas." },
+        { emoji:"🎹", texto:"Piano",   sub:"Instrumento musical", ok:false, fb:"Un piano era imposible de transportar en mulas por los pasos andinos." },
+        { emoji:"🫏", texto:"Mulas",   sub:"Transporte de carga",  ok:true,  fb:"¡Exacto! Las mulas son expertas en caminos de montaña. El ejército usó miles." },
+        { emoji:"🧄", texto:"Ajo y cebolla", sub:"Remedio para el soroche", ok:true, fb:"¡Clave! El ajo y la cebolla se usaban para combatir el mal de altura." },
+        { emoji:"🍦", texto:"Helados", sub:"Postre refrescante",  ok:false, fb:"Sin cadena de frío y con temperaturas extremas, era un suministro absurdo." },
+        { emoji:"🧥", texto:"Ponchos", sub:"Abrigo de lana gruesa", ok:true, fb:"¡Imprescindible! En la cumbre las temperaturas bajan brutalmente de noche." },
+        { emoji:"🐟", texto:"Pescado fresco", sub:"Alimento perecedero", ok:false, fb:"Sin refrigeración, el pescado fresco se hubiera podrido en horas." },
+        { emoji:"☂️", texto:"Sombrillas de seda", sub:"Accesorio de lujo", ok:false, fb:"Peso inútil. El ejército necesitaba equipamiento funcional, no artículos de lujo." }
+      ]
+    },
+    {
+      id: "cabildo",
+      titulo: "El Cabildo Abierto",
+      subtitulo: "22 de Mayo de 1810 — Buenos Aires",
+      contexto: "Se convoca un Cabildo Abierto extraordinario para decidir el futuro del Virreinato. Van a reunirse vecinos, militares y funcionarios. Hay tensión política y el resultado es incierto.",
+      instruccion: "🏛️ Elegí exactamente 4 elementos para llevar al Cabildo.",
+      opciones: [
+        { emoji:"🖋️", texto:"Pluma y papel", sub:"Para votar y firmar", ok:true, fb:"¡Correcto! Las votaciones y actas del Cabildo se registraban por escrito." },
+        { emoji:"⚔️", texto:"Sable de combate", sub:"Arma de guerra", ok:false, fb:"Llevar armas al Cabildo hubiera generado violencia. No era el momento." },
+        { emoji:"📜", texto:"Argumentos jurídicos", sub:"Para el debate", ok:true, fb:"¡Exacto! Los patriotas llegaron preparados con argumentos legales sólidos." },
+        { emoji:"🕯️", texto:"Velas", sub:"Para la sesión nocturna", ok:true, fb:"¡Bien! Las sesiones del Cabildo a veces se extendían hasta la noche." },
+        { emoji:"🍰", texto:"Torta de cumpleaños", sub:"Para celebrar", ok:false, fb:"No había nada que celebrar aún. La situación era muy tensa e incierta." },
+        { emoji:"🧥", texto:"Capa y sombrero", sub:"Vestimenta formal", ok:true, fb:"¡Correcto! Era obligatorio presentarse con vestimenta apropiada a una sesión oficial." },
+        { emoji:"🎸", texto:"Guitarra", sub:"Para entretener", ok:false, fb:"Una guitarra hubiera sido completamente inapropiada en una asamblea política." },
+        { emoji:"💰", texto:"Dinero para sobornar", sub:"Para comprar votos", ok:false, fb:"Aunque existía la corrupción, llevar dinero para sobornar era ilegal y riesgoso." }
+      ]
+    },
+    {
+      id: "logia",
+      titulo: "Reunión de la Logia Lautaro",
+      subtitulo: "1812 — Sociedad Secreta",
+      contexto: "La Logia Lautaro se reúne en secreto para coordinar la independencia americana. Es una sociedad clandestina: si los descubren, serán arrestados. La discreción es todo.",
+      instruccion: "🔐 Elegí exactamente 4 elementos para llevar a la reunión secreta.",
+      opciones: [
+        { emoji:"🕯️", texto:"Vela pequeña", sub:"Para reuniones nocturnas", ok:true, fb:"¡Correcto! Las reuniones eran de noche y en lugares discretos, con poca luz." },
+        { emoji:"📜", texto:"Mensajes cifrados", sub:"En código secreto", ok:true, fb:"¡Exacto! La Logia usaba códigos y claves para comunicarse sin ser descubiertos." },
+        { emoji:"🥁", texto:"Tambor", sub:"Instrumento ruidoso", ok:false, fb:"Un tambor delataría la reunión secreta. La discreción era fundamental." },
+        { emoji:"🤝", texto:"Contraseña de ingreso", sub:"Para identificarse", ok:true, fb:"¡Clave! Los miembros se identificaban con contraseñas y rituales secretos." },
+        { emoji:"🗺️", texto:"Mapa de las provincias", sub:"Para planificar", ok:true, fb:"¡Correcto! Planeaban la estrategia militar y política de toda América del Sur." },
+        { emoji:"🎉", texto:"Fuegos artificiales", sub:"Para celebrar", ok:false, fb:"Los fuegos artificiales atraerían atención. Era exactamente lo que debían evitar." },
+        { emoji:"👑", texto:"Corona real", sub:"Símbolo de la monarquía", ok:false, fb:"La Logia quería eliminar el poder monárquico, no celebrarlo." },
+        { emoji:"📰", texto:"Periódico realista", sub:"Prensa del enemigo", ok:false, fb:"Llevar propaganda del enemigo a una reunión revolucionaria hubiera sido una traición." }
+      ]
+    }
+  ];
+
+  let misionActual = 0;
   let seleccionadas = new Set();
 
-  opciones.forEach(op => {
-    op.addEventListener('click', () => {
-      if (op.classList.contains('seleccionada')) {
-        op.classList.remove('seleccionada');
-        seleccionadas.delete(op);
-      } else if (seleccionadas.size < 4) {
-        op.classList.add('seleccionada');
-        seleccionadas.add(op);
-      }
-      contNum.textContent = seleccionadas.size;
-      btnVerificar.disabled = seleccionadas.size !== 4;
+  // Selector de misiones
+  function crearSelectorMisiones() {
+    const wrap = document.getElementById('mision-selector');
+    MISIONES.forEach((m, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'mision-btn' + (i === 0 ? ' activo' : '');
+      btn.setAttribute('data-mision', i);
+      btn.innerHTML = `<span class="mision-titulo-btn">${m.titulo}</span><span class="mision-sub-btn">${m.subtitulo}</span>`;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mision-btn').forEach(b => b.classList.remove('activo'));
+        btn.classList.add('activo');
+        misionActual = i;
+        cargarMision(i);
+      });
+      wrap.appendChild(btn);
     });
-  });
+  }
 
-  btnVerificar.addEventListener('click', () => {
+  function cargarMision(i) {
+    const m = MISIONES[i];
+    seleccionadas = new Set();
+
+    document.getElementById('mision-titulo').textContent = m.titulo;
+    document.getElementById('mision-subtitulo').textContent = m.subtitulo;
+    document.getElementById('mision-contexto-header').textContent = m.titulo + ' — Contexto';
+    document.getElementById('mision-contexto-body').textContent = m.contexto;
+    document.getElementById('mision-instruccion').textContent = m.instruccion;
+    document.getElementById('contNum').textContent = '0';
+    document.getElementById('btnVerificar').disabled = true;
+    document.getElementById('feedbackList').style.display = 'none';
+    document.getElementById('feedbackList').innerHTML = '';
+    document.getElementById('resultado').style.display = 'none';
+
+    const grid = document.getElementById('opcionesGrid');
+    grid.innerHTML = '';
+    m.opciones.forEach(op => {
+      const div = document.createElement('div');
+      div.className = 'opcion';
+      div.innerHTML = `<span class="opcion-emoji">${op.emoji}</span><div><div class="opcion-texto">${op.texto}</div><div class="opcion-sub">${op.sub}</div></div>`;
+      div.addEventListener('click', () => {
+        if (div.classList.contains('seleccionada')) {
+          div.classList.remove('seleccionada');
+          seleccionadas.delete(div);
+        } else if (seleccionadas.size < 4) {
+          div.classList.add('seleccionada');
+          seleccionadas.add(div);
+        }
+        document.getElementById('contNum').textContent = seleccionadas.size;
+        document.getElementById('btnVerificar').disabled = seleccionadas.size !== 4;
+      });
+      grid.appendChild(div);
+    });
+  }
+
+  document.getElementById('btnVerificar').addEventListener('click', () => {
+    const m = MISIONES[misionActual];
     const feedback = document.getElementById('feedbackList');
     feedback.innerHTML = '';
     feedback.style.display = 'flex';
 
     let errores = 0;
-    seleccionadas.forEach(op => {
-      const ok = op.getAttribute('data-ok') === 'true';
-      const texto = op.querySelector('.opcion-texto').textContent;
-      const fb = op.getAttribute('data-feedback');
-      if (!ok) errores++;
-      const div = document.createElement('div');
-      div.className = `feedback-item ${ok ? 'ok' : 'err'}`;
-      div.innerHTML = `<span class="feedback-icon">${ok ? '✅' : '❌'}</span><span><strong>${texto}:</strong> ${fb}</span>`;
-      feedback.appendChild(div);
+    seleccionadas.forEach(div => {
+      const texto = div.querySelector('.opcion-texto').textContent;
+      const op = m.opciones.find(o => o.texto === texto);
+      if (!op.ok) errores++;
+      const item = document.createElement('div');
+      item.className = `feedback-item ${op.ok ? 'ok' : 'err'}`;
+      item.innerHTML = `<span class="feedback-icon">${op.ok ? '✅' : '❌'}</span><span><strong>${op.texto}:</strong> ${op.fb}</span>`;
+      feedback.appendChild(item);
     });
 
     const res = document.getElementById('resultado');
     res.style.display = 'block';
     if (errores === 0) {
       res.className = 'ok';
-      document.getElementById('resTitulo').textContent = '¡Victoria! Chile aguarda. 🇦🇷';
-      document.getElementById('resTexto').textContent = 'Elegiste los 4 suministros correctos. El cruce de los Andes fue una de las hazañas militares más extraordinarias de la historia americana.';
+      document.getElementById('resTitulo').textContent = '¡Misión cumplida! 🇦🇷';
+      document.getElementById('resTexto').textContent = 'Elegiste los 4 elementos correctos para ' + m.titulo + '.';
     } else {
       res.className = 'err';
-      document.getElementById('resTitulo').textContent = `El cruce falló (${errores} error${errores > 1 ? 'es' : ''})`;
-      document.getElementById('resTexto').textContent = 'Revisá el feedback de cada suministro y volvé a intentarlo.';
+      document.getElementById('resTitulo').textContent = `Fallaste (${errores} error${errores>1?'es':''})`;
+      document.getElementById('resTexto').textContent = 'Revisá el feedback y volvé a intentarlo.';
     }
     res.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
   document.getElementById('btnReintentar').addEventListener('click', () => {
-    seleccionadas.clear();
-    opciones.forEach(op => op.classList.remove('seleccionada'));
-    contNum.textContent = '0';
-    btnVerificar.disabled = true;
-    document.getElementById('feedbackList').style.display = 'none';
-    document.getElementById('feedbackList').innerHTML = '';
-    document.getElementById('resultado').style.display = 'none';
+    cargarMision(misionActual);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   document.getElementById('navToggle').addEventListener('click', () =>
     document.getElementById('navLinks').classList.toggle('open')
   );
+
+  crearSelectorMisiones();
+  cargarMision(0);
 </script>
 </body>
 </html>

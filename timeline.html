@@ -68,6 +68,20 @@
     .contexto-body { padding: 1rem 1.25rem; font-size: 0.82rem; font-weight: 300; line-height: 1.75; color: var(--gris); }
     .contexto-body strong { color: var(--ink); font-weight: 600; }
 
+    /* SELECTOR DE NIVEL */
+    .selector-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.06em; color: var(--ink); margin-bottom: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.5rem; }
+    .nivel-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; border: 2px solid var(--ink); margin-bottom: 2.5rem; }
+    .nivel-btn { padding: 1.25rem 0.75rem; border: none; border-right: 2px solid var(--ink); background: var(--bg); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; transition: background 0.15s; }
+    .nivel-btn:last-child { border-right: none; }
+    .nivel-btn:hover { background: var(--amarillo); }
+    .nivel-btn.activo { background: var(--ink); }
+    .nivel-btn.activo .nivel-label { color: var(--amarillo); }
+    .nivel-btn.activo .nivel-sub { color: rgba(255,255,255,0.6); }
+    .nivel-emoji { font-size: 0.85rem; }
+    .nivel-label { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; color: var(--ink); }
+    .nivel-btn.activo .nivel-label { color: var(--amarillo); }
+    .nivel-sub { font-size: 0.65rem; color: var(--gris); font-weight: 500; }
+
     /* POOL */
     #pool {
       display: flex;
@@ -193,6 +207,13 @@
     }
       .actividad { padding: 2rem 1rem 4rem; }
       .contexto-body { font-size: 0.88rem; }
+      .nivel-grid { grid-template-columns: repeat(2,1fr); }
+      .nivel-btn:nth-child(2) { border-right: none; }
+      .nivel-btn:nth-child(3), .nivel-btn:nth-child(4) { border-top: 2px solid var(--ink); }
+      .nivel-btn:nth-child(4) { border-right: none; }
+      .mision-selector { grid-template-columns: 1fr; }
+      .mision-btn { border-right: none !important; border-bottom: 2px solid var(--ink); }
+      .mision-btn:last-child { border-bottom: none; }
       .slot-row { grid-template-columns: 80px 1fr; }
       .fecha { font-size: 0.9rem; padding: 0.75rem 0.5rem; }
       .slot { min-height: 56px; font-size: 0.88rem; }
@@ -225,64 +246,56 @@
 
 <div class="page-header">
   <span class="page-header-tag">Actividad · Historia Argentina</span>
-  <h1>Camino a la<br/><span class="accent">Revolución</span></h1>
-  <p>Ordená los eventos de la Semana de Mayo en su fecha correcta.</p>
+  <h1>Línea de<br/><span class="accent">Tiempo</span></h1>
+  <p>Ordená los eventos históricos en su fecha correcta. Elegí tu nivel.</p>
 </div>
 
 <div class="actividad">
-  <!-- CONTEXTO -->
-  <div class="contexto">
-    <div class="contexto-header">La Semana de Mayo — Mayo de 1810</div>
-    <div class="contexto-body">
-      En mayo de 1810, Buenos Aires era la capital del Virreinato del Río de la Plata bajo dominio español. La caída de la corona española ante Napoleón generó una crisis de legitimidad: ¿quién gobernaba si el rey estaba preso? Un grupo de patriotas aprovechó ese momento para convocar un <strong>Cabildo Abierto</strong> — una asamblea extraordinaria — y debatir el futuro del virreinato. Tras días de tensión, negociaciones y presión popular en la plaza, el 25 de mayo de 1810 se formó la <strong>Primera Junta de Gobierno Patrio</strong>, el primer gobierno autónomo argentino. Este proceso es el origen de nuestra independencia.
+
+  <!-- SELECTOR DE NIVEL -->
+  <p class="selector-titulo">Elegí tu nivel</p>
+  <div class="nivel-grid" id="nivelGrid">
+    <button class="nivel-btn" data-nivel="0">
+      <span class="nivel-emoji">⭐</span>
+      <span class="nivel-label">1° y 2°</span>
+      <span class="nivel-sub">3 eventos</span>
+    </button>
+    <button class="nivel-btn" data-nivel="1">
+      <span class="nivel-emoji">⭐⭐</span>
+      <span class="nivel-label">3° y 4°</span>
+      <span class="nivel-sub">4 eventos</span>
+    </button>
+    <button class="nivel-btn" data-nivel="2">
+      <span class="nivel-emoji">⭐⭐⭐</span>
+      <span class="nivel-label">5° y 6°</span>
+      <span class="nivel-sub">6 eventos</span>
+    </button>
+    <button class="nivel-btn" data-nivel="3">
+      <span class="nivel-emoji">⭐⭐⭐⭐</span>
+      <span class="nivel-label">7°</span>
+      <span class="nivel-sub">8 eventos</span>
+    </button>
+  </div>
+
+  <!-- ACTIVIDAD DINÁMICA -->
+  <div id="activity-area" style="display:none;">
+    <div class="contexto" id="contexto-box">
+      <div class="contexto-header" id="contexto-titulo"></div>
+      <div class="contexto-body" id="contexto-texto"></div>
+    </div>
+
+    <div class="instruccion" id="instruccion-box"></div>
+
+    <div id="pool"></div>
+    <div class="timeline" id="timeline"></div>
+
+    <div id="resultado" style="display:none;">
+      <h3 id="res-titulo"></h3>
+      <p id="res-texto"></p>
+      <button class="btn-reintentar" id="btnReintentar">↺ Intentar de nuevo</button>
     </div>
   </div>
 
-  <div class="instruccion">
-    📌 Arrastrá cada evento a la fecha que le corresponde. Si te equivocás, el casillero parpadea en rojo y podés intentarlo de nuevo.
-  </div>
-
-  <div id="pool">
-    <div class="item" id="e-25" draggable="true" data-target="s-25">Primer Gobierno Patrio</div>
-    <div class="item" id="e-18" draggable="true" data-target="s-18">El Virrey pide calma</div>
-    <div class="item" id="e-22" draggable="true" data-target="s-22">Votación en el Cabildo</div>
-    <div class="item" id="e-20" draggable="true" data-target="s-20">Reunión con Cisneros</div>
-    <div class="item" id="e-24" draggable="true" data-target="s-24">El pueblo en la Plaza</div>
-    <div class="item" id="e-21" draggable="true" data-target="s-21">Cabildo Abierto</div>
-  </div>
-
-  <div class="timeline">
-    <div class="slot-row">
-      <div class="fecha">18<br/>Mayo</div>
-      <div class="slot" id="s-18" data-id="s-18"></div>
-    </div>
-    <div class="slot-row">
-      <div class="fecha">20<br/>Mayo</div>
-      <div class="slot" id="s-20" data-id="s-20"></div>
-    </div>
-    <div class="slot-row">
-      <div class="fecha">21<br/>Mayo</div>
-      <div class="slot" id="s-21" data-id="s-21"></div>
-    </div>
-    <div class="slot-row">
-      <div class="fecha">22<br/>Mayo</div>
-      <div class="slot" id="s-22" data-id="s-22"></div>
-    </div>
-    <div class="slot-row">
-      <div class="fecha">24<br/>Mayo</div>
-      <div class="slot" id="s-24" data-id="s-24"></div>
-    </div>
-    <div class="slot-row">
-      <div class="fecha">25<br/>Mayo</div>
-      <div class="slot" id="s-25" data-id="s-25"></div>
-    </div>
-  </div>
-
-  <div id="resultado">
-    <h3 id="res-titulo"></h3>
-    <p id="res-texto"></p>
-    <button class="btn-reintentar" id="btnReintentar">↺ Intentar de nuevo</button>
-  </div>
 </div>
 
 <footer>
@@ -294,74 +307,176 @@
 </footer>
 
 <script>
-  // Drag & drop
+  const NIVELES = [
+    {
+      grado: "1° y 2° grado",
+      contexto_titulo: "El 25 de Mayo de 1810",
+      contexto_texto: "Hace mucho tiempo, Argentina no era un país libre. Un grupo de personas valientes se reunió y decidió que querían gobernarse solos. Ese día fue el 25 de Mayo de 1810.",
+      instruccion: "📌 Arrastrá cada imagen a la fecha correcta. ¡Son solo 3!",
+      eventos: [
+        { id:"n0e1", fecha:"18 Mayo", label:"18 Mayo", texto:"El Virrey dice que todo está bien" },
+        { id:"n0e2", fecha:"22 Mayo", label:"22 Mayo", texto:"La gente se junta en el Cabildo" },
+        { id:"n0e3", fecha:"25 Mayo", label:"25 Mayo", texto:"¡Nace el primer gobierno argentino!" }
+      ]
+    },
+    {
+      grado: "3° y 4° grado",
+      contexto_titulo: "La Semana de Mayo — 1810",
+      contexto_texto: "En mayo de 1810, Argentina era gobernada por España. Cuando el rey de España fue capturado, los vecinos de Buenos Aires se preguntaron: ¿quién nos gobierna ahora? Se reunieron en el Cabildo para decidirlo. El 25 de mayo formaron el primer gobierno propio.",
+      instruccion: "📌 Arrastrá cada evento a la fecha que le corresponde.",
+      eventos: [
+        { id:"n1e1", fecha:"18 Mayo", label:"18 Mayo", texto:"El Virrey Cisneros pide calma" },
+        { id:"n1e2", fecha:"21 Mayo", label:"21 Mayo", texto:"Se convoca al Cabildo Abierto" },
+        { id:"n1e3", fecha:"22 Mayo", label:"22 Mayo", texto:"El pueblo vota en el Cabildo" },
+        { id:"n1e4", fecha:"25 Mayo", label:"25 Mayo", texto:"Se forma el Primer Gobierno Patrio" }
+      ]
+    },
+    {
+      grado: "5° y 6° grado",
+      contexto_titulo: "La Semana de Mayo — Mayo de 1810",
+      contexto_texto: "En mayo de 1810, Buenos Aires era la capital del Virreinato del Río de la Plata. La caída del rey Fernando VII ante Napoleón generó una crisis: ¿quién gobernaba? Los patriotas aprovecharon para convocar un Cabildo Abierto y debatir el futuro. Tras días de tensión, el 25 de mayo de 1810 se formó la Primera Junta de Gobierno Patrio.",
+      instruccion: "📌 Arrastrá cada evento a la fecha correcta. ¡Son 6 eventos!",
+      eventos: [
+        { id:"n2e1", fecha:"18 Mayo", label:"18 Mayo", texto:"El Virrey pide calma ante los rumores" },
+        { id:"n2e2", fecha:"20 Mayo", label:"20 Mayo", texto:"Reunión secreta de los patriotas" },
+        { id:"n2e3", fecha:"21 Mayo", label:"21 Mayo", texto:"Se convoca el Cabildo Abierto" },
+        { id:"n2e4", fecha:"22 Mayo", label:"22 Mayo", texto:"Votación: el Virrey debe renunciar" },
+        { id:"n2e5", fecha:"24 Mayo", label:"24 Mayo", texto:"El pueblo se concentra en la Plaza" },
+        { id:"n2e6", fecha:"25 Mayo", label:"25 Mayo", texto:"Jura la Primera Junta de Gobierno" }
+      ]
+    },
+    {
+      grado: "7° grado",
+      contexto_titulo: "La Revolución de Mayo en contexto — 1810",
+      contexto_texto: "La Revolución de Mayo fue el resultado de un proceso político complejo. La invasión napoleónica a España en 1808 deslegitimó a las autoridades coloniales. En Buenos Aires, dos bandos se enfrentaron: los que querían seguir obedeciendo a España y los que buscaban autonomía. La Semana de Mayo fue el momento en que los patriotas — liderados por Saavedra, Belgrano, Moreno y otros — lograron imponer un gobierno propio, sin romper formalmente con la corona.",
+      instruccion: "📌 Ocho eventos históricos. Ordenalos con precisión.",
+      eventos: [
+        { id:"n3e1", fecha:"13 Mayo", label:"13 Mayo", texto:"Llegan noticias de la caída de Sevilla" },
+        { id:"n3e2", fecha:"18 Mayo", label:"18 Mayo", texto:"Cisneros proclama que nada ha cambiado" },
+        { id:"n3e3", fecha:"19 Mayo", label:"19 Mayo", texto:"Los criollos exigen un Cabildo Abierto" },
+        { id:"n3e4", fecha:"21 Mayo", label:"21 Mayo", texto:"Se convoca el Cabildo Abierto extraordinario" },
+        { id:"n3e5", fecha:"22 Mayo", label:"22 Mayo", texto:"Votación: 155 vecinos deciden el cese del Virrey" },
+        { id:"n3e6", fecha:"23 Mayo", label:"23 Mayo", texto:"Cisneros intenta presidir una junta mixta" },
+        { id:"n3e7", fecha:"24 Mayo", label:"24 Mayo", texto:"El pueblo rechaza la junta de Cisneros" },
+        { id:"n3e8", fecha:"25 Mayo", label:"25 Mayo", texto:"Jura la Primera Junta de Gobierno Patrio" }
+      ]
+    }
+  ];
+
+  let nivelActual = null;
   let dragId = null;
 
-  document.querySelectorAll('.item').forEach(item => {
-    item.addEventListener('dragstart', e => {
-      dragId = e.target.id;
-      setTimeout(() => e.target.classList.add('dragging'), 0);
-    });
-    item.addEventListener('dragend', e => {
-      e.target.classList.remove('dragging');
+  document.querySelectorAll('.nivel-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nivel-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      nivelActual = parseInt(btn.getAttribute('data-nivel'));
+      iniciarNivel(nivelActual);
     });
   });
 
-  document.querySelectorAll('.slot').forEach(slot => {
-    slot.addEventListener('dragover', e => {
-      e.preventDefault();
-      slot.classList.add('drag-over');
+  function iniciarNivel(n) {
+    const nivel = NIVELES[n];
+    document.getElementById('activity-area').style.display = 'block';
+    document.getElementById('contexto-titulo').textContent = nivel.contexto_titulo;
+    document.getElementById('contexto-texto').innerHTML = nivel.contexto_texto;
+    document.getElementById('instruccion-box').textContent = nivel.instruccion;
+    document.getElementById('resultado').style.display = 'none';
+
+    // Pool
+    const pool = document.getElementById('pool');
+    pool.innerHTML = '';
+    // Shuffle
+    const shuffled = [...nivel.eventos].sort(() => Math.random() - 0.5);
+    shuffled.forEach(ev => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.id = ev.id;
+      div.setAttribute('data-target', 's-' + ev.id);
+      div.setAttribute('draggable', 'true');
+      div.textContent = ev.texto;
+      pool.appendChild(div);
     });
-    slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
-    slot.addEventListener('drop', e => {
+
+    // Timeline
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = '';
+    nivel.eventos.forEach(ev => {
+      const row = document.createElement('div');
+      row.className = 'slot-row';
+      row.innerHTML = `<div class="fecha">${ev.label.replace(' ','<br/>')}</div><div class="slot" id="s-${ev.id}" data-id="s-${ev.id}"></div>`;
+      timeline.appendChild(row);
+    });
+
+    registrarEventos();
+    document.getElementById('activity-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function registrarEventos() {
+    dragId = null;
+
+    document.querySelectorAll('.item').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        dragId = e.target.id;
+        setTimeout(() => e.target.classList.add('dragging'), 0);
+      });
+      item.addEventListener('dragend', e => e.target.classList.remove('dragging'));
+    });
+
+    document.querySelectorAll('.slot').forEach(slot => {
+      slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+      slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+      slot.addEventListener('drop', e => {
+        e.preventDefault();
+        slot.classList.remove('drag-over');
+        if (!dragId) return;
+        const el = document.getElementById(dragId);
+        if (!el) return;
+        const expectedSlot = el.getAttribute('data-target');
+        if (slot.id === expectedSlot) {
+          slot.appendChild(el);
+          el.draggable = false;
+          slot.classList.add('ok');
+          checkWin();
+        } else {
+          slot.classList.add('err');
+          setTimeout(() => slot.classList.remove('err'), 600);
+        }
+      });
+    });
+
+    const pool = document.getElementById('pool');
+    pool.addEventListener('dragover', e => e.preventDefault());
+    pool.addEventListener('drop', e => {
       e.preventDefault();
-      slot.classList.remove('drag-over');
-      if (slot.children.length > 0) return; // slot occupied
+      if (!dragId) return;
       const el = document.getElementById(dragId);
-      if (!el) return;
-
-      const expectedSlot = el.getAttribute('data-target');
-      if (slot.id === expectedSlot) {
-        slot.appendChild(el);
-        el.draggable = false;
-        slot.classList.add('ok');
-        checkWin();
-      } else {
-        slot.classList.add('err');
-        setTimeout(() => slot.classList.remove('err'), 600);
+      if (el) {
+        const parent = el.parentElement;
+        if (parent && parent.classList.contains('slot')) {
+          parent.classList.remove('ok');
+          el.draggable = true;
+        }
+        pool.appendChild(el);
       }
     });
-  });
-
-  // Pool drop
-  document.getElementById('pool').addEventListener('dragover', e => e.preventDefault());
-  document.getElementById('pool').addEventListener('drop', e => {
-    e.preventDefault();
-    const el = document.getElementById(dragId);
-    if (el) {
-      // Return to pool
-      const parent = el.parentElement;
-      if (parent && parent.classList.contains('slot')) {
-        parent.classList.remove('ok');
-        el.draggable = true;
-      }
-      document.getElementById('pool').appendChild(el);
-    }
-  });
+  }
 
   function checkWin() {
-    const total = document.querySelectorAll('.slot.ok').length;
-    if (total === 6) {
+    const nivel = NIVELES[nivelActual];
+    const total = nivel.eventos.length;
+    if (document.querySelectorAll('.slot.ok').length === total) {
       const res = document.getElementById('resultado');
       res.className = 'ok';
       res.style.display = 'block';
       document.getElementById('res-titulo').textContent = '¡Misión cumplida, historiador! 🇦🇷';
-      document.getElementById('res-texto').textContent = 'Ordenaste correctamente los seis eventos de la Semana de Mayo de 1810. Así comenzó el camino hacia la independencia argentina.';
+      document.getElementById('res-texto').textContent = `Ordenaste correctamente los ${total} eventos de ${nivel.grado}. ¡Excelente trabajo!`;
       res.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
   document.getElementById('btnReintentar').addEventListener('click', () => {
+    if (nivelActual === null) return;
     document.querySelectorAll('.slot').forEach(s => {
       s.classList.remove('ok', 'err');
       if (s.firstChild) {
@@ -372,7 +487,6 @@
     document.getElementById('resultado').style.display = 'none';
   });
 
-  // Nav hamburger
   document.getElementById('navToggle').addEventListener('click', () =>
     document.getElementById('navLinks').classList.toggle('open')
   );
